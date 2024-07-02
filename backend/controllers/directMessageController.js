@@ -121,6 +121,7 @@ const getDirectMessages = asyncHandler(async (req, res) => {
     .populate('sentTo', 'name');
 
   res.status(200).json(directMessages);
+  console.log('This is a direct message')
 });
 
 export {
