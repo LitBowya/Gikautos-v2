@@ -63,3 +63,20 @@ table th {
 .no-arrow-dropdown > .nav-link::after {
   display: none !important;
 }
+
+.navbar-height{
+  height: 50px;
+}
+
+.chat-container{
+  display: flex;
+  overflow-y: hidden;
+}
+
+.sidebarMenu{
+  flex: 1;
+}
+
+.messageContainer{
+  flex: 2;
+}

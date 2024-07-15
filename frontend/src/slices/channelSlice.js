@@ -1,67 +1,31 @@
-import { apiSlice } from './apiSlice';
-import { CHANNEL_URL } from '../constants';
+// channelSlice.js
 
-export const channelsApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    createChannel: builder.mutation({
-      query: (channel) => ({
-        url: CHANNEL_URL,
-        method: 'POST',
-        body: channel,
-      }),
-      invalidatesTags: ['Channel'],
-    }),
-    editChannel: builder.mutation({
-      query: ({ channelId, channel }) => ({
-        url: `${CHANNEL_URL}/${channelId}`,
-        method: 'PUT',
-        body: channel,
-      }),
-      invalidatesTags: ['Channel'],
-    }),
-    deleteChannel: builder.mutation({
-      query: (channelId) => ({
-        url: `${CHANNEL_URL}/${channelId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Channel'],
-    }),
-    joinChannel: builder.mutation({
-      query: (channelId) => ({
-        url: `${CHANNEL_URL}/${channelId}/join`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['Channel'],
-    }),
-    leaveChannel: builder.mutation({
-      query: (channelId) => ({
-        url: `${CHANNEL_URL}/${channelId}/leave`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['Channel'],
-    }),
-    fetchChannels: builder.query({
-      query: () => ({
-        url: CHANNEL_URL,
-        method: 'GET',
-      }),
-      providesTags: ['Channel'],
-    }),
-    fetchChannelMembers: builder.query({
-      query: (channelId) => ({
-        url: `${CHANNEL_URL}/${channelId}/members`,
-      }),
-      providesTags: ['Channel'],
-    }),
-  }),
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  channelId: localStorage.getItem("channelId") || null,
+  channelName: localStorage.getItem("channelName") || null,
+};
+
+const channelSlice = createSlice({
+  name: "channel",
+  initialState,
+  reducers: {
+    setChannelInfo: (state, action) => {
+      state.channelId = action.payload.channelId;
+      state.channelName = action.payload.channelName;
+      localStorage.setItem("channelId", action.payload.channelId);
+      localStorage.setItem("channelName", action.payload.channelName);
+    },
+    clearChannelInfo: (state) => {
+      state.channelId = null;
+      state.channelName = null;
+      localStorage.removeItem("channelId");
+      localStorage.removeItem("channelName");
+    },
+  },
 });
 
-export const {
-  useCreateChannelMutation,
-  useEditChannelMutation,
-  useDeleteChannelMutation,
-  useJoinChannelMutation,
-  useLeaveChannelMutation,
-  useFetchChannelsQuery,
-  useFetchChannelMembersQuery,
-} = channelsApiSlice;
+export const { setChannelInfo, clearChannelInfo } = channelSlice.actions;
+
+export default channelSlice.reducer;

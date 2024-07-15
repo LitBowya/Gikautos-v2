@@ -30,10 +30,17 @@ function fileFilter(req, file, cb) {
   }
 }
 
-const upload = multer({ storage, fileFilter });
-const uploadSingleImage = upload.single("image");
+// Single image upload middleware
+const uploadSingleImage = multer({ storage, fileFilter }).single("");
 
-router.post("/", (req, res) => {
+// Multiple images upload middleware
+const uploadMultipleImages = multer({ storage, fileFilter }).array(
+  "images",
+  10
+); // 10 is the maximum number of files
+
+// Route for single image upload
+router.post("/single", (req, res) => {
   uploadSingleImage(req, res, function (err) {
     if (err) {
       return res.status(400).send({ message: err.message });
@@ -42,6 +49,21 @@ router.post("/", (req, res) => {
     res.status(200).send({
       message: "Image uploaded successfully",
       image: `/${req.file.path}`,
+    });
+  });
+});
+
+// Route for multiple images upload
+router.post("/multiple", (req, res) => {
+  uploadMultipleImages(req, res, function (err) {
+    if (err) {
+      return res.status(400).send({ message: err.message });
+    }
+
+    const paths = req.files.map((file) => `/${file.path}`);
+    res.status(200).send({
+      message: "Images uploaded successfully",
+      images: paths,
     });
   });
 });

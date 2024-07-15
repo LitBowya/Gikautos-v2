@@ -9,10 +9,6 @@ export const apiSlice = createApi({
     'Product',
     'Order',
     'User',
-    'Channel',
-    'Message',
-    'Reply',
-    'DirectMessage',
     'Mechanic'
   ],
   endpoints: (builder) => ({}),

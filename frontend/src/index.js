@@ -39,7 +39,7 @@ import ChatPage from "./pages/ChatPage.jsx";
 import SearchBox from "./components/Search/SearchBox.jsx";
 import MechanicHomepage from "./pages/Mechanic/MechanicHomepage.jsx";
 import MechanicDetailPage from "./pages/Mechanic/MechanicDetailPage.jsx";
-import DirectMessageList from "./components/ChatApp/DirectMessageList.jsx";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,7 +65,6 @@ const router = createBrowserRouter(
         <Route path='/chatpage' element={<ChatPage />} />
         <Route path='/order/:id' element={<OrderPage />} />
         <Route path='/profile' element={<ProfilePage />} />
-        <Route path='/direct/:id' element={<DirectMessageList />} />
         
       </Route>
 
@@ -83,6 +82,7 @@ const router = createBrowserRouter(
     </Route>
   )
 );
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

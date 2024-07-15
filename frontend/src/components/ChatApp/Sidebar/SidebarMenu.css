@@ -1,0 +1,5 @@
+.custom-sidebar {
+    background-color: #0a0b0c !important;
+    height: calc(100vh - 50px);
+    border-radius: 0 !important;
+}

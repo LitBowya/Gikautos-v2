@@ -1,0 +1,34 @@
+.channels {
+  color: white;
+}
+
+.channels_modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 250px !important;
+  overflow-y: hidden;
+}
+
+.addChannel{
+  cursor: pointer;
+  transition: all .5s;
+}
+
+.addChannel:hover{
+  transform: scale(1.25);
+  color: #eee;
+}
+
+.channels_list{
+  cursor: pointer;
+  transition: all .5s;
+  color: white !important;
+  font-size: 1rem !important;
+}
+
+.channels_list.active{
+  background-color: white !important;
+  color: black !important
+}

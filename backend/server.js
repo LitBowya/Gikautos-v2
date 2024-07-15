@@ -14,10 +14,6 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import mechanicRoutes from './routes/mechanicRoutes.js';
-import channelRoutes from './routes/channelRoutes.js';
-import messageRoutes from './routes/messageRoutes.js';
-import replyRoutes from './routes/replyRoutes.js';
-import directMessageRoutes from './routes/directMessageRoutes.js'
 
 // Import utilities and middleware
 import connectDB from './config/db.js';
@@ -63,10 +59,6 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/paystack', paymentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/mechanics', mechanicRoutes);
-app.use('/api/channels', channelRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/replies', replyRoutes);
-app.use('/api/directmessage', directMessageRoutes)
 
 // Serve static files from the "uploads" directory
 const __dirname = path.resolve();

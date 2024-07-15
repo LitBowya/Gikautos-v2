@@ -1,0 +1,11 @@
+.users_list{
+  cursor: pointer;
+  transition: all .5s;
+  color: white !important;
+  font-size: 1rem !important;
+}
+
+.users_list.active{
+  background-color: white !important;
+  color: black !important
+}

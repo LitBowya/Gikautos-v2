@@ -28,7 +28,7 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="md">
+      <Navbar bg="dark" variant="dark" expand="md" className="navbar-height">
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>GIKAUTOS</Navbar.Brand>

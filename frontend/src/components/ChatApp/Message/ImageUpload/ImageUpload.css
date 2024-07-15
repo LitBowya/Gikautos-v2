@@ -1,0 +1,9 @@
+.image_upload_modal{
+    position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 250px !important;
+  width: 70vw;
+  overflow-y: hidden;
+}
