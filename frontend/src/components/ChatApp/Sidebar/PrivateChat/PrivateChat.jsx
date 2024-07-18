@@ -3,6 +3,7 @@ import { Menu, Icon } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 import { database, ref, onValue, off } from "../../../../config/firebase";
 import { setSelectedUser, setUserInfo } from "../../../../slices/userSlice";
+import { generateChannelId } from "../../../../utils/generateChannelId";
 import "./PrivateChat.css";
 
 const PrivateChat = () => {
@@ -55,22 +56,16 @@ const PrivateChat = () => {
     }
   };
 
-  const generateChannelId = (userId) => {
-    if (userInfo._id > userId) {
-      return userInfo._id + userId;
-    } else {
-      return userId + userInfo._id;
-    }
-  };
 
-  const selectUser = (user) => {
-    const userTemp = { ...user, id: generateChannelId(user.id) };
-    dispatch(setSelectedUser(userTemp));
-    dispatch(
-      setUserInfo({ userId: userInfo._id, userName: userInfo.username })
-    );
-    setActiveUser(user.id);
-  };
+ const selectUser = (user) => {
+   const userTemp = {
+     ...user,
+     channelId: generateChannelId(userInfo.username, user.name),
+   };
+   dispatch(setSelectedUser(userTemp));
+   dispatch(setUserInfo({ userId: userInfo._id, userName: userInfo.username }));
+   setActiveUser(user.id);
+ };
 
   return (
     <Menu.Menu className="users">

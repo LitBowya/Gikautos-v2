@@ -1,5 +1,4 @@
-// utils/channelUtils.js
-
-export const generateChannelId = (userId1, userId2) => {
-  return userId1 > userId2 ? `${userId1}-${userId2}` : `${userId2}-${userId1}`;
+export const generateChannelId = (userName1, userName2) => {
+  // Sort the usernames alphabetically and join them with an underscore
+  return [userName1, userName2].sort().join("_");
 };

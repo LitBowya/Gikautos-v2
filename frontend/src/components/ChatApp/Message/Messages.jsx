@@ -5,6 +5,7 @@ import { Segment, Comment } from "semantic-ui-react";
 import MessageContent from "./MessageContent/MessageContent";
 import MessageHeader from "./MessageHeader/MessageHeader";
 import MessageInput from "./MessageInput/MessageInput";
+import { generateChannelId } from "../../../utils/generateChannelId";
 
 import "./Messages.css";
 
@@ -22,8 +23,10 @@ export const Messages = () => {
     let messageRef;
 
     if (selectedUser) {
-      messageRef = ref(database, `privatechat/${selectedUser.id+userInfo._id}`);
-      console.log('selected user id', selectedUser.id+userInfo._id);
+      messageRef = ref(
+        database,
+        `privatechat/${generateChannelId(userInfo.username, selectedUser.name)}`
+      );
     } else if (channel) {
       messageRef = ref(database, `messages/${channel.channelId}`);
     }
@@ -35,7 +38,6 @@ export const Messages = () => {
           messages.push(childSnapshot.val());
         });
         setMessageState(messages);
-        console.log(messages);
       });
 
       return () => {
@@ -43,6 +45,7 @@ export const Messages = () => {
       };
     }
   }, [channel, selectedUser, isPrivateChat, userInfo]);
+
 
   const displayMessages = () => {
     let messagesToDisplay = searchTermState
@@ -90,7 +93,6 @@ export const Messages = () => {
     return messages;
   };
 
-  console.log("This is a private chat: ", isPrivateChat);
 
   return (
     <div>

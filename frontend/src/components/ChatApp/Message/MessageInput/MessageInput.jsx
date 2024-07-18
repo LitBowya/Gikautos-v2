@@ -1,8 +1,8 @@
-// MessageInput.js
 import React, { useState, useEffect } from "react";
 import { Segment, Input, Button, Popup } from "semantic-ui-react";
 import { useSelector } from "react-redux";
-import { Picker } from "emoji-mart";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import {
   database,
   ref,
@@ -16,6 +16,7 @@ import {
 } from "../../../../config/firebase";
 import { ImageUpload } from "../ImageUpload/ImageUpload";
 import { v4 as uuidv4 } from "uuid";
+import { generateChannelId } from "../../../../utils/generateChannelId";
 
 const MessageInput = ({ replyToMessage }) => {
   const channelId = useSelector((state) => state.channel.channelId);
@@ -57,10 +58,13 @@ const MessageInput = ({ replyToMessage }) => {
       let messageRef;
 
       if (selectedUser) {
-        // Sending message to selected user privately
+        // Sending message to selected user privately using usernames
         messageRef = ref(
           database,
-          `privatechat/${generateChannelId(selectedUser.id)}`
+          `privatechat/${generateChannelId(
+            userInfo.username,
+            selectedUser.name
+          )}`
         );
       } else {
         // Sending message to channel
@@ -81,15 +85,6 @@ const MessageInput = ({ replyToMessage }) => {
       console.warn("ChannelId or messageState is undefined or empty.");
     }
   };
-
-  const generateChannelId = (userId) => {
-    if (userInfo._id > userId) {
-      return userInfo._id + userId;
-    } else {
-      return userId + userInfo._id;
-    }
-  };
-
 
   const onMessageChange = (e) => {
     const { value } = e.target;
@@ -114,7 +109,10 @@ const MessageInput = ({ replyToMessage }) => {
           trigger={<Button icon="smile" />}
         >
           <Picker
-            onSelect={(emoji) => setMessageState(messageState + emoji.native)}
+            data={data}
+            onEmojiSelect={(emoji) =>
+              setMessageState((prevState) => prevState + emoji.native)
+            }
           />
         </Popup>
       </>
