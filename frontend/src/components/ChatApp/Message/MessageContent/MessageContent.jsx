@@ -1,5 +1,5 @@
-import { Comment, Image } from "semantic-ui-react"
-import './MessageContent.css'
+import { Comment, Image } from "semantic-ui-react";
+import "./MessageContent.css";
 
 const MessageContent = ({ message, ownMessage }) => {
   return (
@@ -18,4 +18,4 @@ const MessageContent = ({ message, ownMessage }) => {
   );
 };
 
-export default MessageContent
+export default MessageContent;

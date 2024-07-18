@@ -3,15 +3,18 @@ import { useSelector } from "react-redux";
 
 const MessageHeader = ({ uniqueUsers, searchTermChange, isPrivateChat }) => {
   const channelName = useSelector((state) => state.channel.channelName);
+  const user = useSelector((state) => state.user);
+
   return (
     <Segment clearing>
       <Header floated="left" fluid="true" as="h2">
         <span>
-          {/* {channelName} */}
-          {(isPrivateChat ? "@ ": "# ") +channelName}
+          {isPrivateChat ? `@ ${user.selectedUser.name}` : `# ${channelName}`}
           {!isPrivateChat && <Icon name="star outline" />}
         </span>
-        <Header.Subheader>{uniqueUsers} Users</Header.Subheader>
+        {!isPrivateChat && (
+          <Header.Subheader>{uniqueUsers} Users</Header.Subheader>
+        )}
       </Header>
       <Header floated="right">
         <Input

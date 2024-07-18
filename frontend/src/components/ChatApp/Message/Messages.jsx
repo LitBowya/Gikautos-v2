@@ -11,26 +11,38 @@ import "./Messages.css";
 export const Messages = () => {
   const channel = useSelector((state) => state.channel);
   const { userInfo } = useSelector((state) => state.auth);
+  const selectedUser = useSelector((state) => state.user.selectedUser);
 
   const [messagesState, setMessageState] = useState([]);
   const [searchTermState, setSearchTermState] = useState("");
 
+  const isPrivateChat = selectedUser && selectedUser.isPrivateChat;
+
   useEffect(() => {
-    if (channel) {
-      const messageRef = ref(database, `messages/${channel.channelId}`);
+    let messageRef;
+
+    if (selectedUser) {
+      messageRef = ref(database, `privatechat/${selectedUser.id+userInfo._id}`);
+      console.log('selected user id', selectedUser.id+userInfo._id);
+    } else if (channel) {
+      messageRef = ref(database, `messages/${channel.channelId}`);
+    }
+
+    if (messageRef) {
       const unsubscribe = onValue(messageRef, (snapshot) => {
         const messages = [];
         snapshot.forEach((childSnapshot) => {
           messages.push(childSnapshot.val());
         });
         setMessageState(messages);
+        console.log(messages);
       });
 
       return () => {
         off(messageRef, "value", unsubscribe);
       };
     }
-  }, [channel]);
+  }, [channel, selectedUser, isPrivateChat, userInfo]);
 
   const displayMessages = () => {
     let messagesToDisplay = searchTermState
@@ -44,7 +56,7 @@ export const Messages = () => {
             key={message.createdAt}
             message={message}
           />
-        ) : null // Return null if message.user or message.user.id is undefined
+        ) : null
       );
     }
   };
@@ -78,8 +90,7 @@ export const Messages = () => {
     return messages;
   };
 
-  const isPrivateChat = channel && channel.isPrivate;
-  console.log(isPrivateChat);
+  console.log("This is a private chat: ", isPrivateChat);
 
   return (
     <div>

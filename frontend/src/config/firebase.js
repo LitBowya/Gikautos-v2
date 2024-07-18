@@ -8,7 +8,8 @@ import {
   onChildAdded,
   off,
   child,
-  onValue
+  onValue,
+  remove,
 } from "firebase/database";
 import {
   getStorage,
@@ -45,5 +46,6 @@ export {
   storageRef,
   uploadBytes,
   getDownloadURL,
+  remove,
 };
 export default firebase;

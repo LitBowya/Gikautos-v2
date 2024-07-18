@@ -10,6 +10,7 @@ import {
   off,
 } from "../../../../config/firebase";
 import { setChannelInfo } from "../../../../slices/channelSlice";
+import { clearSelectedUser } from "../../../../slices/userSlice";
 // import MessageInput from "../../Message/MessageInput/MessageInput";
 import "./Channels.css";
 
@@ -122,7 +123,8 @@ const Channels = () => {
   const handleChannelClick = (channelId, channelName) => {
     setActiveChannel(channelId);
     setSelectedChannelId(channelId);
-    dispatch(setChannelInfo({ channelId, channelName })); // Dispatch action to set channelId and channelName in Redux
+    dispatch(setChannelInfo({ channelId, channelName }));
+    dispatch(clearSelectedUser());
   };
 
   return (

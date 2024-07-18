@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Segment, Input, Button } from "semantic-ui-react";
+// MessageInput.js
+import React, { useState, useEffect } from "react";
+import { Segment, Input, Button, Popup } from "semantic-ui-react";
 import { useSelector } from "react-redux";
+import { Picker } from "emoji-mart";
 import {
   database,
   ref,
@@ -15,14 +17,20 @@ import {
 import { ImageUpload } from "../ImageUpload/ImageUpload";
 import { v4 as uuidv4 } from "uuid";
 
-const MessageInput = () => {
+const MessageInput = ({ replyToMessage }) => {
   const channelId = useSelector((state) => state.channel.channelId);
+  const selectedUser = useSelector((state) => state.user.selectedUser);
   const { userInfo } = useSelector((state) => state.auth);
 
   const [messageState, setMessageState] = useState("");
   const [fileDialogState, setFileDialog] = useState(false);
+  const [emojiPickerState, setEmojiPickerState] = useState(false);
 
-  const messageRef = ref(database, "messages");
+  useEffect(() => {
+    if (replyToMessage) {
+      setMessageState(`@${replyToMessage.user.name} `);
+    }
+  }, [replyToMessage]);
 
   const createMessageInfo = (downloadUrl) => {
     const currentTime = new Date();
@@ -40,14 +48,27 @@ const MessageInput = () => {
         minute: "2-digit",
         second: "2-digit",
       }),
+      replyTo: replyToMessage || null,
     };
   };
 
   const sendMessage = (downloadUrl) => {
-    if ((channelId && messageState) || downloadUrl) {
-      const channelMessageRef = child(messageRef, channelId);
+    if ((channelId && messageState) || downloadUrl || selectedUser) {
+      let messageRef;
+
+      if (selectedUser) {
+        // Sending message to selected user privately
+        messageRef = ref(
+          database,
+          `privatechat/${generateChannelId(selectedUser.id)}`
+        );
+      } else {
+        // Sending message to channel
+        messageRef = child(ref(database, "messages"), channelId);
+      }
+
       const messageInfo = createMessageInfo(downloadUrl);
-      const newMessageRef = push(channelMessageRef);
+      const newMessageRef = push(messageRef);
 
       set(newMessageRef, messageInfo)
         .then(() => {
@@ -60,6 +81,15 @@ const MessageInput = () => {
       console.warn("ChannelId or messageState is undefined or empty.");
     }
   };
+
+  const generateChannelId = (userId) => {
+    if (userInfo._id > userId) {
+      return userInfo._id + userId;
+    } else {
+      return userId + userInfo._id;
+    }
+  };
+
 
   const onMessageChange = (e) => {
     const { value } = e.target;
@@ -76,6 +106,17 @@ const MessageInput = () => {
           }}
         />
         <Button icon="upload" onClick={() => setFileDialog(true)} />
+        <Popup
+          on="click"
+          open={emojiPickerState}
+          onClose={() => setEmojiPickerState(false)}
+          onOpen={() => setEmojiPickerState(true)}
+          trigger={<Button icon="smile" />}
+        >
+          <Picker
+            onSelect={(emoji) => setMessageState(messageState + emoji.native)}
+          />
+        </Popup>
       </>
     );
   };
