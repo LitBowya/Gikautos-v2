@@ -18,7 +18,7 @@ import { ImageUpload } from "../ImageUpload/ImageUpload";
 import { v4 as uuidv4 } from "uuid";
 import { generateChannelId } from "../../../../utils/generateChannelId";
 
-const MessageInput = ({ replyToMessage }) => {
+const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
   const channelId = useSelector((state) => state.channel.channelId);
   const selectedUser = useSelector((state) => state.user.selectedUser);
   const { userInfo } = useSelector((state) => state.auth);
@@ -32,6 +32,12 @@ const MessageInput = ({ replyToMessage }) => {
       setMessageState(`@${replyToMessage.user.name} `);
     }
   }, [replyToMessage]);
+
+  useEffect(() => {
+    if (editingMessage) {
+      setMessageState(editingMessage.content);
+    }
+  }, [editingMessage]);
 
   const createMessageInfo = (downloadUrl) => {
     const currentTime = new Date();
@@ -97,7 +103,11 @@ const MessageInput = ({ replyToMessage }) => {
         <Button
           icon="send"
           onClick={() => {
-            sendMessage();
+            if (editingMessage) {
+              onEditMessage(editingMessage.id, messageState);
+            } else {
+              sendMessage();
+            }
           }}
         />
         <Button icon="upload" onClick={() => setFileDialog(true)} />

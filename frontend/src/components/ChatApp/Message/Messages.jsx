@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { database, ref, onValue, off } from "../../../config/firebase";
+import {
+  database,
+  ref,
+  onValue,
+  off,
+  update,
+  remove,
+} from "../../../config/firebase";
 import { Segment, Comment } from "semantic-ui-react";
 import MessageContent from "./MessageContent/MessageContent";
 import MessageHeader from "./MessageHeader/MessageHeader";
@@ -16,6 +23,7 @@ export const Messages = () => {
 
   const [messagesState, setMessageState] = useState([]);
   const [searchTermState, setSearchTermState] = useState("");
+  const [editingMessage, setEditingMessage] = useState(null);
 
   const isPrivateChat = selectedUser && selectedUser.isPrivateChat;
 
@@ -35,7 +43,7 @@ export const Messages = () => {
       const unsubscribe = onValue(messageRef, (snapshot) => {
         const messages = [];
         snapshot.forEach((childSnapshot) => {
-          messages.push(childSnapshot.val());
+          messages.push({ id: childSnapshot.key, ...childSnapshot.val() });
         });
         setMessageState(messages);
       });
@@ -46,6 +54,38 @@ export const Messages = () => {
     }
   }, [channel, selectedUser, isPrivateChat, userInfo]);
 
+  const handleEditMessage = (messageId, newContent) => {
+    let messageRef;
+    if (selectedUser) {
+      messageRef = ref(
+        database,
+        `privatechat/${generateChannelId(
+          userInfo.username,
+          selectedUser.name
+        )}/${messageId}`
+      );
+    } else {
+      messageRef = ref(database, `messages/${channel.channelId}/${messageId}`);
+    }
+    update(messageRef, { content: newContent });
+    setEditingMessage(null);
+  };
+
+  const handleDeleteMessage = (messageId) => {
+    let messageRef;
+    if (selectedUser) {
+      messageRef = ref(
+        database,
+        `privatechat/${generateChannelId(
+          userInfo.username,
+          selectedUser.name
+        )}/${messageId}`
+      );
+    } else {
+      messageRef = ref(database, `messages/${channel.channelId}/${messageId}`);
+    }
+    remove(messageRef);
+  };
 
   const displayMessages = () => {
     let messagesToDisplay = searchTermState
@@ -58,6 +98,10 @@ export const Messages = () => {
             ownMessage={message.user.id === userInfo._id}
             key={message.createdAt}
             message={message}
+            onEdit={handleEditMessage}
+            onDelete={handleDeleteMessage}
+            onReply={setMessageState} // Handle reply logic
+            onReact={setMessageState} // Handle react logic
           />
         ) : null
       );
@@ -93,7 +137,6 @@ export const Messages = () => {
     return messages;
   };
 
-
   return (
     <div>
       <MessageHeader
@@ -104,7 +147,10 @@ export const Messages = () => {
       <Segment className="message_content">
         <Comment.Group>{displayMessages()}</Comment.Group>
       </Segment>
-      <MessageInput />
+      <MessageInput
+        editingMessage={editingMessage}
+        onEditMessage={handleEditMessage}
+      />
     </div>
   );
 };
