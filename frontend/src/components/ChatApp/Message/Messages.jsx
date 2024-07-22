@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
   database,
@@ -29,6 +29,8 @@ export const Messages = () => {
   const [replyingToMessage, setReplyingToMessage] = useState(null);
   const [reactions, setReactions] = useState({});
 
+  let divRef = useRef();
+
   const isPrivateChat = selectedUser && selectedUser.isPrivateChat;
 
   useEffect(() => {
@@ -57,6 +59,12 @@ export const Messages = () => {
       };
     }
   }, [channel, selectedUser, isPrivateChat, userInfo]);
+
+  useEffect(() => {
+    if (divRef.current) {
+      divRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messagesState]);
 
   const handleEditMessage = (messageId, newContent) => {
     let messageRef;
@@ -254,7 +262,10 @@ export const Messages = () => {
         isPrivateChat={isPrivateChat}
       />
       <Segment className="message_content">
-        <Comment.Group>{displayMessages()}</Comment.Group>
+        <Comment.Group>
+          {displayMessages()}
+          <div ref={divRef}></div>
+        </Comment.Group>
       </Segment>
       <MessageInput
         editingMessage={editingMessage}

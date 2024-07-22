@@ -10,7 +10,6 @@ const MessageHeader = ({ uniqueUsers, searchTermChange, isPrivateChat }) => {
       <Header floated="left" fluid="true" as="h2">
         <span>
           {isPrivateChat ? `@ ${user.selectedUser.name}` : `# ${channelName}`}
-          {!isPrivateChat && <Icon name="star outline" />}
         </span>
         {!isPrivateChat && (
           <Header.Subheader>{uniqueUsers} Users</Header.Subheader>

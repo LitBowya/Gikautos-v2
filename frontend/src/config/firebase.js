@@ -6,10 +6,12 @@ import {
   set,
   update,
   onChildAdded,
+  onChildRemoved,
   off,
   child,
   onValue,
   remove,
+  onDisconnect,
 } from "firebase/database";
 import {
   getStorage,
@@ -47,5 +49,7 @@ export {
   uploadBytes,
   getDownloadURL,
   remove,
+  onDisconnect,
+  onChildRemoved,
 };
 export default firebase;
