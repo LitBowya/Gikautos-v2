@@ -7,6 +7,8 @@ import {
   off,
   update,
   remove,
+  push,
+  set,
 } from "../../../config/firebase";
 import { Segment, Comment } from "semantic-ui-react";
 import MessageContent from "./MessageContent/MessageContent";
@@ -69,8 +71,13 @@ export const Messages = () => {
     } else {
       messageRef = ref(database, `messages/${channel.channelId}/${messageId}`);
     }
-    update(messageRef, { content: newContent });
-    setEditingMessage(null);
+    update(messageRef, { content: newContent })
+      .then(() => {
+        setEditingMessage(null); // Clear the editing state after updating
+      })
+      .catch((error) => {
+        console.error("Error updating message:", error);
+      });
   };
 
   const handleDeleteMessage = (messageId) => {
@@ -139,22 +146,68 @@ export const Messages = () => {
     setReplyingToMessage(message);
   };
 
+  const handleAddReply = (replyContent) => {
+    if (!replyingToMessage || !replyContent) return;
+
+    const messageId = replyingToMessage.id;
+    let replyRef;
+
+    if (selectedUser) {
+      replyRef = ref(
+        database,
+        `privatechat/${generateChannelId(
+          userInfo.username,
+          selectedUser.name
+        )}/${messageId}/replies`
+      );
+    } else {
+      replyRef = ref(
+        database,
+        `messages/${channel.channelId}/${messageId}/replies`
+      );
+    }
+
+    const newReplyRef = push(replyRef);
+    const reply = {
+      id: newReplyRef.key,
+      content: replyContent,
+      userId: userInfo._id,
+      userName: userInfo.username,
+      profilePicture: userInfo.profilePicture,
+      createdTime: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+    };
+
+    set(newReplyRef, reply)
+      .then(() => {
+        setReplyingToMessage(null);
+      })
+      .catch((error) => {
+        console.error("Error adding reply:", error);
+      });
+  };
+
   const displayMessages = () => {
     let messagesToDisplay = searchTermState
       ? filterMessageBySearchTerm()
       : messagesState;
+
     if (messagesToDisplay.length > 0) {
       return messagesToDisplay.map((message) =>
         message.user && message.user.id ? (
           <MessageContent
             ownMessage={message.user.id === userInfo._id}
-            key={message.createdAt}
+            key={message.id}
             message={message}
-            onEdit={handleEditMessage}
+            onEdit={(id, content) => setEditingMessage({ id, content })}
             onDelete={handleDeleteMessage}
             onReply={handleReplyToMessage}
             onReact={handleReactToMessage}
             reactions={reactions[message.id] || []}
+            replyToMessage={replyingToMessage}
           />
         ) : null
       );
@@ -207,6 +260,7 @@ export const Messages = () => {
         editingMessage={editingMessage}
         onEditMessage={handleEditMessage}
         replyToMessage={replyingToMessage}
+        onAddReply={handleAddReply}
       />
     </div>
   );

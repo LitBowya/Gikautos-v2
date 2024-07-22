@@ -17,8 +17,14 @@ import {
 import { ImageUpload } from "../ImageUpload/ImageUpload";
 import { v4 as uuidv4 } from "uuid";
 import { generateChannelId } from "../../../../utils/generateChannelId";
+import Message from "../../../Message/Message";
 
-const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
+const MessageInput = ({
+  replyToMessage,
+  editingMessage,
+  onEditMessage,
+  onAddReply,
+}) => {
   const channelId = useSelector((state) => state.channel.channelId);
   const selectedUser = useSelector((state) => state.user.selectedUser);
   const { userInfo } = useSelector((state) => state.auth);
@@ -30,7 +36,6 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
   useEffect(() => {
     if (replyToMessage) {
       setMessageState(`${replyToMessage.content}\n`);
-      console.log("Replying to message: ", replyToMessage);
     }
   }, [replyToMessage]);
 
@@ -107,8 +112,13 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
         e.preventDefault();
         if (editingMessage) {
           onEditMessage(editingMessage.id, messageState);
+          setMessageState("");
+        } else if (replyToMessage) {
+          onAddReply(messageState);
+          setMessageState("");
         } else {
           sendMessage();
+          setMessageState("");
         }
       }
     }
@@ -122,11 +132,15 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
           onClick={() => {
             if (editingMessage) {
               onEditMessage(editingMessage.id, messageState);
+            } else if (replyToMessage) {
+              onAddReply(messageState);
             } else {
               sendMessage();
             }
           }}
-        />
+        >
+          {editingMessage ? "Save" : replyToMessage ? "Reply" : null}
+        </Button>
         <Button icon="upload" onClick={() => setFileDialog(true)} />
         <Popup
           on="click"
@@ -167,13 +181,16 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
 
   return (
     <Segment>
+      {replyToMessage && (
+        <Message>Replying to: {replyToMessage.content}</Message>
+      )}
+      {editingMessage && <Message>Editing: {editingMessage.content}</Message>}
       <TextArea
         fluid={true}
         name="message"
         value={messageState}
         onKeyPress={handleKeyPress}
         onChange={onMessageChange}
-        style={{ minHeight: 100 }}
       />
       <ImageUpload
         uploadImage={uploadImage}
