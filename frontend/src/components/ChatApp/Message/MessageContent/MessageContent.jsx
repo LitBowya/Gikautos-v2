@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Comment, Image, Button, Icon, Popup, Input } from "semantic-ui-react";
+import { Comment, Image, Icon, Popup, Label, Button } from "semantic-ui-react";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+import { ref, update } from "../../../../config/firebase";
 import "./MessageContent.css";
 
 const MessageContent = ({
@@ -9,14 +12,42 @@ const MessageContent = ({
   onDelete,
   onReply,
   onReact,
+  reactions,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(message.content);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const handleEdit = () => {
-    onEdit(message.id, editContent);
-    setIsEditing(false);
+  const handleEmojiSelect = (emoji) => {
+    onReact(message.id, emoji.native);
+    setShowEmojiPicker(false);
   };
+
+const renderReactions = () => {
+  if (!message.reactions) return null;
+
+  // Convert the reactions object to an array
+  const reactionsArray = Object.values(message.reactions);
+
+  // Group reactions by emoji
+  const groupedReactions = reactionsArray.reduce((acc, reaction) => {
+    if (!acc[reaction.emoji]) {
+      acc[reaction.emoji] = [];
+    }
+    acc[reaction.emoji].push(reaction.userName);
+    return acc;
+  }, {});
+
+  return Object.keys(groupedReactions).map((emoji) => (
+    <Popup
+      key={emoji}
+      content={groupedReactions[emoji].join(", ")}
+      trigger={
+        <Label circular>
+          {emoji} {groupedReactions[emoji].length}
+        </Label>
+      }
+    />
+  ));
+};
 
   return (
     <Comment className={ownMessage ? "ownMessage" : null}>
@@ -24,30 +55,37 @@ const MessageContent = ({
         <Comment.Avatar src={message.user.profilePicture} />
         <Comment.Author>{message.user.name}</Comment.Author>
         <Comment.Metadata>{message.createdTime}</Comment.Metadata>
-        {isEditing ? (
-          <Input
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            action={{
-              icon: "save",
-              onClick: handleEdit,
-            }}
-          />
-        ) : message.image ? (
+        {message.image ? (
           <Image src={message.image} />
         ) : (
-          <Comment.Text>{message.content}</Comment.Text>
+          <Comment.Text style={{ whiteSpace: "pre-wrap" }}>
+            {message.content}
+          </Comment.Text>
         )}
+        {renderReactions()}
         <Comment.Actions>
           {ownMessage && (
             <>
               <Popup
                 trigger={<Icon name="edit" />}
                 content={
-                  <Button onClick={() => setIsEditing(true)}>Edit</Button>
+                  <Button onClick={() => onEdit(message.id, message.content)}>
+                    Edit
+                  </Button>
                 }
                 on="click"
                 position="top center"
+              />
+              <Popup
+                trigger={
+                  <Icon name="smile" onClick={() => setShowEmojiPicker(true)} />
+                }
+                content={
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                }
+                on="click"
+                open={showEmojiPicker}
+                onClose={() => setShowEmojiPicker(false)}
               />
               <Icon name="trash" onClick={() => onDelete(message.id)} />
             </>
@@ -55,7 +93,17 @@ const MessageContent = ({
           {!ownMessage && (
             <>
               <Icon name="reply" onClick={() => onReply(message)} />
-              <Icon name="smile" onClick={() => onReact(message)} />
+              <Popup
+                trigger={
+                  <Icon name="smile" onClick={() => setShowEmojiPicker(true)} />
+                }
+                content={
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                }
+                on="click"
+                open={showEmojiPicker}
+                onClose={() => setShowEmojiPicker(false)}
+              />
             </>
           )}
         </Comment.Actions>

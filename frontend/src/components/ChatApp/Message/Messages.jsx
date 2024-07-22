@@ -24,6 +24,8 @@ export const Messages = () => {
   const [messagesState, setMessageState] = useState([]);
   const [searchTermState, setSearchTermState] = useState("");
   const [editingMessage, setEditingMessage] = useState(null);
+  const [replyingToMessage, setReplyingToMessage] = useState(null);
+  const [reactions, setReactions] = useState({});
 
   const isPrivateChat = selectedUser && selectedUser.isPrivateChat;
 
@@ -87,6 +89,56 @@ export const Messages = () => {
     remove(messageRef);
   };
 
+  const handleReactToMessage = (messageId, emoji) => {
+    let messageRef;
+    if (selectedUser) {
+      messageRef = ref(
+        database,
+        `privatechat/${generateChannelId(
+          userInfo.username,
+          selectedUser.name
+        )}/${messageId}/reactions`
+      );
+    } else {
+      messageRef = ref(
+        database,
+        `messages/${channel.channelId}/${messageId}/reactions`
+      );
+    }
+
+    const newReactions = { ...reactions };
+    if (!newReactions[messageId]) {
+      newReactions[messageId] = [];
+    }
+
+    const existingReactionIndex = newReactions[messageId].findIndex(
+      (r) => r.userId === userInfo._id
+    );
+
+    if (existingReactionIndex !== -1) {
+      newReactions[messageId][existingReactionIndex].emoji = emoji;
+    } else {
+      newReactions[messageId].push({
+        userId: userInfo._id,
+        userName: userInfo.username,
+        emoji,
+      });
+    }
+
+    // Convert array to object for Firebase update
+    const reactionsObject = newReactions[messageId].reduce((acc, reaction) => {
+      acc[reaction.userId] = reaction;
+      return acc;
+    }, {});
+
+    update(messageRef, reactionsObject);
+    setReactions(newReactions);
+  };
+
+  const handleReplyToMessage = (message) => {
+    setReplyingToMessage(message);
+  };
+
   const displayMessages = () => {
     let messagesToDisplay = searchTermState
       ? filterMessageBySearchTerm()
@@ -100,8 +152,9 @@ export const Messages = () => {
             message={message}
             onEdit={handleEditMessage}
             onDelete={handleDeleteMessage}
-            onReply={setMessageState} // Handle reply logic
-            onReact={setMessageState} // Handle react logic
+            onReply={handleReplyToMessage}
+            onReact={handleReactToMessage}
+            reactions={reactions[message.id] || []}
           />
         ) : null
       );
@@ -109,6 +162,9 @@ export const Messages = () => {
   };
 
   const uniqueUsersCount = () => {
+    if (!Array.isArray(messagesState)) {
+      return 0;
+    }
     const uniqueUsers = messagesState.reduce((acc, message) => {
       if (message.user && !acc.includes(message.user.name)) {
         acc.push(message.user.name);
@@ -150,6 +206,7 @@ export const Messages = () => {
       <MessageInput
         editingMessage={editingMessage}
         onEditMessage={handleEditMessage}
+        replyToMessage={replyingToMessage}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Segment, Input, Button, Popup } from "semantic-ui-react";
+import { Segment, Button, Popup, TextArea } from "semantic-ui-react";
 import { useSelector } from "react-redux";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
@@ -29,7 +29,8 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
 
   useEffect(() => {
     if (replyToMessage) {
-      setMessageState(`@${replyToMessage.user.name} `);
+      setMessageState(`${replyToMessage.content}\n`);
+      console.log("Replying to message: ", replyToMessage);
     }
   }, [replyToMessage]);
 
@@ -93,8 +94,24 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
   };
 
   const onMessageChange = (e) => {
-    const { value } = e.target;
-    setMessageState(value);
+    setMessageState(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      if (e.shiftKey) {
+        // Add a new line when Shift + Enter is pressed
+        setMessageState((prevState) => prevState + "\n");
+      } else {
+        // Send the message when Enter is pressed without Shift
+        e.preventDefault();
+        if (editingMessage) {
+          onEditMessage(editingMessage.id, messageState);
+        } else {
+          sendMessage();
+        }
+      }
+    }
   };
 
   const createActionButtons = () => {
@@ -131,7 +148,7 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
 
   const uploadImage = (file, contentType) => {
     const filePath = `chat/images/${uuidv4()}.jpg`;
-    const storageReference = storageRef(storage, filePath); // Create a non-root reference
+    const storageReference = storageRef(storage, filePath);
 
     uploadBytes(storageReference, file, { contentType })
       .then((data) => {
@@ -150,19 +167,20 @@ const MessageInput = ({ replyToMessage, editingMessage, onEditMessage }) => {
 
   return (
     <Segment>
-      <Input
+      <TextArea
         fluid={true}
         name="message"
         value={messageState}
-        label={createActionButtons()}
-        labelPosition="right"
+        onKeyPress={handleKeyPress}
         onChange={onMessageChange}
+        style={{ minHeight: 100 }}
       />
       <ImageUpload
         uploadImage={uploadImage}
         open={fileDialogState}
         onClose={() => setFileDialog(false)}
       />
+      {createActionButtons()}
     </Segment>
   );
 };
