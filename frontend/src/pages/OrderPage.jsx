@@ -52,7 +52,7 @@ const OrderPage = () => {
   return isLoading ? (
     <Loader />
   ) : error ? (
-    <Message variant='danger'>{error}</Message>
+    <Message variant="danger">{error}</Message>
   ) : (
     <Container>
       <h2>Order Id {order._id}</h2>
@@ -68,27 +68,47 @@ const OrderPage = () => {
                 <strong>Email: {order.user.email}</strong>
               </p>
               <p>
-                <strong>
-                  Address: {order.shippingAddress.address},{' '}
-                  {order.shippingAddress.city}{' '}
-                  {order.shippingAddress.postalCode},{' '}
-                  {order.shippingAddress.country}
-                </strong>
+                <strong>Full Name: </strong>
+                {userInfo.name}
+              </p>
+              <p>
+                <strong>Phone Number: </strong>
+                {order.shippingAddress.phoneNumber}
+              </p>
+              <p>
+                <strong>Other Phone Number: </strong>
+                {order.shippingAddress.otherPhoneNumber}
+              </p>
+              <p>
+                <strong>Region: </strong>
+                {order.shippingAddress.region}
+              </p>
+              <p>
+                <strong>City: </strong>
+                {order.shippingAddress.city}
+              </p>
+              <p>
+                <strong>Additional Information: </strong>
+                {order.shippingAddress.additionalInformation}
+              </p>
+              <p>
+                <strong>GP Address: </strong>
+                {order.shippingAddress.address}
               </p>
               {order.isDelivered ? (
-                <Message variant='success'>
+                <Message variant="success">
                   Delivered on {formatDate(order.deliveredAt)}
                 </Message>
               ) : (
-                <Message variant='danger'>Not delivered</Message>
+                <Message variant="danger">Not delivered</Message>
               )}
               {userInfo &&
                 userInfo.isAdmin &&
                 order.isPaid &&
                 !order.isDelivered && (
                   <Button
-                    type='button'
-                    className='btn btn-block'
+                    type="button"
+                    className="btn btn-block"
                     onClick={deliverOrderHandler}
                   >
                     Mark As Delivered
@@ -103,16 +123,16 @@ const OrderPage = () => {
                 {order.paymentMethod}
               </p>
               {order.isPaid ? (
-                <Message variant='success'>
+                <Message variant="success">
                   Paid on {formatDate(order.paidAt)}
                 </Message>
               ) : (
-                <Message variant='danger'>Not Paid</Message>
+                <Message variant="danger">Not Paid</Message>
               )}
               {userInfo && userInfo.isAdmin && !order.isPaid && (
                 <Button
-                  type='button'
-                  className='btn btn-block'
+                  type="button"
+                  className="btn btn-block"
                   onClick={payOnDeliveryOrderHandler}
                 >
                   Mark As Paid
@@ -125,10 +145,10 @@ const OrderPage = () => {
               {order.orderItems.length === 0 ? (
                 <Message>Order is empty</Message>
               ) : (
-                <ListGroup variant='flush'>
+                <ListGroup variant="flush">
                   {order.orderItems.map((item, index) => (
                     <ListGroup.Item key={index}>
-                      <Row className='d-flex align-items-center'>
+                      <Row className="d-flex align-items-center">
                         <Col md={2}>
                           <Image
                             src={item.image}
@@ -154,7 +174,7 @@ const OrderPage = () => {
 
         <Col md={4}>
           <Card>
-            <ListGroup variant='flush'>
+            <ListGroup variant="flush">
               <ListGroup.Item>
                 <h6>Order Summary</h6>
               </ListGroup.Item>
@@ -178,17 +198,17 @@ const OrderPage = () => {
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                {order.paymentMethod === 'PayStack' ? (
+                {order.paymentMethod === "PayStack" ? (
                   <div>
                     {order.isPaid && !userInfo.isAdmin ? (
                       <div>
                         <Message>Thank You For Shopping At GIKautos</Message>
-                        <Button variant='info' className='btn-block w-100'>
+                        <Button variant="info" className="btn-block w-100">
                           <Link
-                            to='/'
+                            to="/"
                             style={{
-                              textDecoration: 'none',
-                              color: 'white',
+                              textDecoration: "none",
+                              color: "white",
                             }}
                           >
                             Continue Shopping
@@ -211,15 +231,15 @@ const OrderPage = () => {
                   <>
                     {userInfo.isAdmin ? null : (
                       <div>
-                        <Message variant='success'>
+                        <Message variant="success">
                           Thank You For Shopping With GIKautos
                         </Message>
-                        <Button className='btn-block w-100'>
+                        <Button className="btn-block w-100">
                           <Link
-                            to='/'
+                            to="/"
                             style={{
-                              textDecoration: 'none',
-                              color: 'white',
+                              textDecoration: "none",
+                              color: "white",
                             }}
                           >
                             Continue Shopping

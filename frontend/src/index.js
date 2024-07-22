@@ -22,6 +22,7 @@ import AdminRoute from "./components/AdminRoute/AdminRoute.jsx";
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import CartPage from "./pages/CartPage";
+import WishlistPage from "./pages/WishlistPage.jsx";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ShippingPage from "./pages/ShippingPage";
@@ -44,41 +45,41 @@ import MechanicDetailPage from "./pages/Mechanic/MechanicDetailPage.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<App />}>
-      <Route index={true} path='/' element={<HomePage />} />
-      <Route path='/search/:keyword' element={<HomePage />} />
-      <Route path='/page/:pageNumber' element={<HomePage />} />
-      <Route path='/category/:category' element={<ProductByCategoryPage />} />
-      <Route path='/search' element={<SearchBox />} />
-      <Route path='/search/:keyword/page/:pageNumber' element={<HomePage />} />
-      <Route path='/product/:id' element={<ProductPage />} />
-      <Route path='/cart' element={<CartPage />} />
-      <Route path='/login' element={<LoginPage />} />
-      <Route path='/register' element={<RegisterPage />} />
-      <Route path='/shop' element={<ShopPage />} />
-      <Route path='/mechanic' element={<MechanicHomepage />} />
-        <Route path='/mechanic/:id' element={<MechanicDetailPage />} />
+    <Route path="/" element={<App />}>
+      <Route index={true} path="/" element={<HomePage />} />
+      <Route path="/search/:keyword" element={<HomePage />} />
+      <Route path="/page/:pageNumber" element={<HomePage />} />
+      <Route path="/category/:category" element={<ProductByCategoryPage />} />
+      <Route path="/search" element={<SearchBox />} />
+      <Route path="/search/:keyword/page/:pageNumber" element={<HomePage />} />
+      <Route path="/product/:id" element={<ProductPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/wishlist" element={<WishlistPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/shop" element={<ShopPage />} />
+      <Route path="/mechanic" element={<MechanicHomepage />} />
+      <Route path="/mechanic/:id" element={<MechanicDetailPage />} />
 
-      <Route path='' element={<PrivateRoute />}>
-        <Route path='/shipping' element={<ShippingPage />} />
-        <Route path='/payment' element={<PaymentPage />} />
-        <Route path='/placeorder' element={<PlaceOrderPage />} />
-        <Route path='/chatpage' element={<ChatPage />} />
-        <Route path='/order/:id' element={<OrderPage />} />
-        <Route path='/profile' element={<ProfilePage />} />
-        
+      <Route path="" element={<PrivateRoute />}>
+        <Route path="/shipping" element={<ShippingPage />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/placeorder" element={<PlaceOrderPage />} />
+        <Route path="/chatpage" element={<ChatPage />} />
+        <Route path="/order/:id" element={<OrderPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
 
-      <Route path='' element={<AdminRoute />}>
-        <Route path='/admin/orderlist' element={<OrderListPage />} />
-        <Route path='/admin/productlist' element={<ProductListPage />} />
-        <Route path='/admin/userlist' element={<UserListPage />} />
-        <Route path='/admin/product/:id/edit' element={<ProductEditPage />} />
+      <Route path="" element={<AdminRoute />}>
+        <Route path="/admin/orderlist" element={<OrderListPage />} />
+        <Route path="/admin/productlist" element={<ProductListPage />} />
+        <Route path="/admin/userlist" element={<UserListPage />} />
+        <Route path="/admin/product/:id/edit" element={<ProductEditPage />} />
         <Route
-          path='/admin/productlist/:pageNumber'
+          path="/admin/productlist/:pageNumber"
           element={<ProductListPage />}
         />
-        <Route path='/admin/user/:id/edit' element={<UserEditPage />} />
+        <Route path="/admin/user/:id/edit" element={<UserEditPage />} />
       </Route>
     </Route>
   )

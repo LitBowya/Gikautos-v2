@@ -53,7 +53,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Order creation failed", error: error.message });
+      .json({ message: "Order failed", error: `Error found: ${error.message}` });
   }
 });
 

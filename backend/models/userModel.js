@@ -85,6 +85,15 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    wishlists: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+      }
+    ],
     isAdmin: {
       type: Boolean,
       required: true,

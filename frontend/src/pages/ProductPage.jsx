@@ -19,6 +19,7 @@ import {
   useCreateReviewMutation,
 } from "../slices/productsApiSlice";
 import { useAddToCartMutation } from "../slices/cartApiSlice";
+import { useAddToWishlistMutation } from "../slices/wishlistSlice";
 import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
 import Rating from "../components/Rating/Rating";
 import Loader from "../components/Loader/Loader";
@@ -32,6 +33,7 @@ const ProductPage = () => {
   const [comment, setComment] = useState("");
 
   const [addToCartItems] = useAddToCartMutation();
+  const [addToWishlist] = useAddToWishlistMutation();
 
   const {
     data: productSelected,
@@ -72,6 +74,19 @@ const ProductPage = () => {
     } catch (error) {
       console.error("Error adding item to cart:", error);
       toast.error("Failed to add item to cart");
+    }
+  };
+
+  const addToWishlistHandler = async () => {
+    try {
+      await addToWishlist({
+        productId: productSelected._id,
+      });
+      refetch();
+      toast.success("Item added to wishlist successfully");
+    } catch (error) {
+      console.error("Error adding item to wishlist:", error);
+      toast.error("Failed to add item to wishlist");
     }
   };
 
@@ -205,7 +220,18 @@ const ProductPage = () => {
                     >
                       Add To Cart
                     </Button>
-                  </ListGroup.Item>
+                      </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Button
+                      className="btn-block"
+                      type="button"
+                      disabled={productSelected.countInStock === 0}
+                      onClick={addToWishlistHandler}
+                    >
+                      Add To Wishlist
+                    </Button>
+                      </ListGroup.Item>
+                      
                 </ListGroup>
               </Card>
             </Col>
@@ -224,7 +250,7 @@ const ProductPage = () => {
                     <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                     <span className="text-success">
-                      <FaCheckCircle className="mx-1"/>
+                      <FaCheckCircle className="mx-1" />
                       Verified Purchase
                     </span>
                   </ListGroup.Item>

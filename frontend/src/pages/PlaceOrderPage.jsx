@@ -14,6 +14,7 @@ import {
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
+  const {userInfo} = useSelector((state) => state.auth);
   const cart = useSelector((state) => state.cart);
 
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
@@ -40,12 +41,12 @@ const PlaceOrderPage = () => {
   };
 
   useEffect(() => {
-    if (!cart.shippingAddress.address) {
+    if (!cart.shippingAddress) {
       navigate("/shipping");
     } else if (!cart.paymentMethod) {
       navigate("/payment");
     }
-  }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
+  }, [cart.paymentMethod, cart.shippingAddress, navigate]);
 
   const orderItems =
     cartItems &&
@@ -93,9 +94,9 @@ const PlaceOrderPage = () => {
       }).unwrap();
       await clearCartHandler();
       navigate(`/order/${res._id}`);
-    } catch (err) {
-      console.error(err);
-      toast.error(err);
+    } catch (error) {
+      console.error('Error', error);
+      toast.error(error);
     }
   };
 
@@ -104,14 +105,36 @@ const PlaceOrderPage = () => {
       <CheckoutSteps step1 step2 step3 step4 />
       <Row>
         <Col md={8}>
-          <ListGroup variant='flush'>
+          <ListGroup variant="flush">
             <ListGroup.Item>
-              <h4>Shipping</h4>
+              <h2>Shipping</h2>
               <p>
-                <strong>Address:</strong>
-                {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
-                {cart.shippingAddress.postalCode},{' '}
-                {cart.shippingAddress.country}
+                <strong>Full Name: </strong>
+                {userInfo.name}
+              </p>
+              <p>
+                <strong>Phone Number: </strong>
+                {cart.shippingAddress.phoneNumber}
+              </p>
+              <p>
+                <strong>Other Phone Number: </strong>
+                {cart.shippingAddress.otherPhoneNumber}
+              </p>
+              <p>
+                <strong>Region: </strong>
+                {cart.shippingAddress.region}
+              </p>
+              <p>
+                <strong>City: </strong>
+                {cart.shippingAddress.city}
+              </p>
+              <p>
+                <strong>Additional Information: </strong>
+                {cart.shippingAddress.additionalInformation}
+              </p>
+              <p>
+                <strong>GP Address: </strong>
+                {cart.shippingAddress.address}
               </p>
             </ListGroup.Item>
 
@@ -126,12 +149,12 @@ const PlaceOrderPage = () => {
               {cartItems && cartItems.length === 0 ? (
                 <Message>Your cart is empty</Message>
               ) : (
-                <ListGroup variant='flush'>
+                <ListGroup variant="flush">
                   {cartItems && (
                     <div>
                       {cartItems.map((item, index) => (
                         <ListGroup.Item key={index}>
-                          <Row className='d-flex align-items-center'>
+                          <Row className="d-flex align-items-center">
                             <Col md={2}>
                               <Image
                                 src={item.product.image}
@@ -140,11 +163,9 @@ const PlaceOrderPage = () => {
                                 rounded
                               />
                             </Col>
-                            <Col>
-                                {item.product.name}
-                            </Col>
+                            <Col>{item.product.name}</Col>
                             <Col md={4}>
-                              {parseInt(item.quantity)} x ${item.product.price}{' '}
+                              {parseInt(item.quantity)} x ${item.product.price}{" "}
                               = $
                               {(
                                 parseInt(item.quantity) * item.product.price
@@ -162,7 +183,7 @@ const PlaceOrderPage = () => {
         </Col>
         <Col md={4}>
           <Card>
-            <ListGroup variant='flush'>
+            <ListGroup variant="flush">
               <ListGroup.Item>
                 <h4>Order Summary</h4>
               </ListGroup.Item>
@@ -187,14 +208,14 @@ const PlaceOrderPage = () => {
               </ListGroup.Item>
               <ListGroup.Item>
                 {error && (
-                  <Message variant='danger'>{error.data.message}</Message>
+                  <Message variant="danger">{error.data.message}</Message>
                 )}
               </ListGroup.Item>
               <ListGroup.Item>
-                {cart.paymentMethod === 'On Delivery' ? (
+                {cart.paymentMethod === "On Delivery" ? (
                   <Button
-                    type='button'
-                    className='btn-block w-100'
+                    type="button"
+                    className="btn-block w-100"
                     disabled={cartItems && cartItems === 0}
                     onClick={placeOrderHandler}
                   >
@@ -202,8 +223,8 @@ const PlaceOrderPage = () => {
                   </Button>
                 ) : (
                   <Button
-                    type='button'
-                    className='btn-block w-100'
+                    type="button"
+                    className="btn-block w-100"
                     disabled={cartItems && cartItems === 0}
                     onClick={orderNow}
                   >

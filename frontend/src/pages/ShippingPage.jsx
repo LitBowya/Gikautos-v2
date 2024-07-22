@@ -10,10 +10,19 @@ const ShippingPage = () => {
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
+  // Initialize state with existing shipping address or empty values
   const [address, setAddress] = useState(shippingAddress?.address || "");
   const [city, setCity] = useState(shippingAddress?.city || "");
-  const [postalCode, setPostalCode] = useState(shippingAddress?.postalCode || "");
-  const [country, setCountry] = useState(shippingAddress?.country || "");
+  const [phoneNumber, setPhoneNumber] = useState(
+    shippingAddress?.phoneNumber || ""
+  );
+  const [otherPhoneNumber, setOtherPhoneNumber] = useState(
+    shippingAddress?.otherPhoneNumber || ""
+  );
+  const [additionalInformation, setAdditionalInformation] = useState(
+    shippingAddress?.additionalInformation || ""
+  );
+  const [region, setRegion] = useState(shippingAddress?.region || "");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,31 +30,63 @@ const ShippingPage = () => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    // Dispatch action to save shipping address
+    dispatch(
+      saveShippingAddress({
+        address,
+        city,
+        otherPhoneNumber,
+        phoneNumber,
+        additionalInformation,
+        region,
+      })
+    );
     navigate("/payment");
   };
 
   return (
-      <FormContainer>
-          <CheckoutSteps step1 step2 />
-          
+    <FormContainer>
+      <CheckoutSteps step1 step2 />
+
       <h1>Shipping</h1>
       <Form onSubmit={submitHandler}>
-        <Form.Group controlId="address" className="my-2">
-          <Form.Label>Address</Form.Label>
+        <Form.Group controlId="phoneNumber" className="my-2">
+          <Form.Label>Phone Number</Form.Label>
           <Form.Control
-          required
+            required
+            type="number"
+            placeholder="Enter Phone Number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="otherPhoneNumber" className="my-2">
+          <Form.Label>Other Phone Number</Form.Label>
+          <Form.Control
+            required
+            type="number"
+            placeholder="Enter Other Phone Number"
+            value={otherPhoneNumber}
+            onChange={(e) => setOtherPhoneNumber(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="region" className="my-2">
+          <Form.Label>Region</Form.Label>
+          <Form.Control
+            required
             type="text"
-            placeholder="Enter address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Enter Region"
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
         <Form.Group controlId="city" className="my-2">
           <Form.Label>City</Form.Label>
           <Form.Control
-          required
+            required
             type="text"
             placeholder="Enter City"
             value={city}
@@ -53,29 +94,29 @@ const ShippingPage = () => {
           ></Form.Control>
         </Form.Group>
 
-        <Form.Group controlId="postalCode" className="my-2">
-          <Form.Label>Postal Code</Form.Label>
+        <Form.Group controlId="address" className="my-2">
+          <Form.Label>GP Address</Form.Label>
           <Form.Control
-          required
             type="text"
-            placeholder="Enter Postal Code"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
+            placeholder="Enter GP Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
-        <Form.Group controlId="country" className="my-2">
-          <Form.Label>Country</Form.Label>
+        <Form.Group controlId="additionalInformation" className="my-2">
+          <Form.Label>Additional Information</Form.Label>
           <Form.Control
-          required
             type="text"
-            placeholder="Enter country"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
+            placeholder="Enter additional information"
+            value={additionalInformation}
+            onChange={(e) => setAdditionalInformation(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
-        <Button type="submit" className="my-2">Continue</Button>
+        <Button type="submit" className="my-2">
+          Continue
+        </Button>
       </Form>
     </FormContainer>
   );

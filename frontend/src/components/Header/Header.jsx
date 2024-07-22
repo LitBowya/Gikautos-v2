@@ -1,6 +1,6 @@
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser, FaSearch } from "react-icons/fa";
-import { FaRocketchat, FaGears } from "react-icons/fa6";
+import { FaRocketchat, FaGears, FaHeart } from "react-icons/fa6";
 import { useSelector, useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -52,6 +52,12 @@ const Header = () => {
                     <Nav.Link>
                       <FaShoppingCart />
                       Cart
+                    </Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to="/wishlist">
+                    <Nav.Link>
+                      <FaHeart />
+                      Wishlist
                     </Nav.Link>
                   </LinkContainer>
                   <LinkContainer to="/chatpage">
