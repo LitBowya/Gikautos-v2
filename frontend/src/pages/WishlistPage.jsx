@@ -12,7 +12,7 @@ import Message from "../components/Message/Message";
 import Loader from "../components/Loader/Loader";
 
 const WishlistPage = () => {
-  const { data: wishlist, isLoading, refetch } = useGetWishlistQuery();
+  const { data: wishlist = [], isLoading, refetch } = useGetWishlistQuery();
   const [removeFromWishlist] = useRemoveFromWishlistMutation();
   const [clearWishlist, { isLoading: clearWishlistLoading, isError, error }] =
     useClearWishlistMutation();
@@ -21,7 +21,6 @@ const WishlistPage = () => {
     refetch();
   }, [refetch]);
 
-  console.log("Items from wishlist", wishlist);
 
   const removeItemHandler = async (productId) => {
     if (window.confirm("Are you sure you want to remove this item?")) {

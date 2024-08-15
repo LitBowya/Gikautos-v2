@@ -1,7 +1,10 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import Token from "../models/tokeModel.js";
+import {sendEmail} from "../utils/sendEmail.js";
 import dotenv from "dotenv";
+import crypto from "crypto";
 
 dotenv.config();
 
@@ -33,7 +36,6 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 const registerUser = asyncHandler(async (req, res) => {
   const {
     name,
@@ -63,8 +65,14 @@ const registerUser = asyncHandler(async (req, res) => {
     reviews: isMechanic ? [] : null,
   });
 
-  if (newUser) {
+  const token = await new Token({
+    userId: User._id,
+    token: crypto.randomBytes(32).toString("hex"),
+  }).save();
+  const url = `${process.env.BASE_URL}users/${User.id}/verify/${token.token}`;
+  await sendEmail(User.email, "Verify Email", url);
 
+  if (newUser) {
     res.status(201).json({
       _id: newUser._id,
       name: newUser.name,

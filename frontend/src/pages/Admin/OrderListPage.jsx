@@ -9,7 +9,7 @@ import { formatDate } from "../../utils/dateUtils";
 
 const OrderListPage = () => {
   const { data: orders, isLoading, error, refetch } = useGetOrdersQuery();
-  
+
   useEffect(() => {
     refetch();
   }, [orders, refetch]);
@@ -20,7 +20,10 @@ const OrderListPage = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error}</Message>
+        // Ensure you're accessing the message correctly
+        <Message variant="danger">
+          {error.message || "An error occurred"}
+        </Message>
       ) : (
         <Table striped hover responsive className="table-sm">
           <thead>
@@ -36,7 +39,7 @@ const OrderListPage = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {orders?.map((order) => (
               <tr key={order._id}>
                 <td>{order._id}</td>
                 <td>{order.user && order.user.name}</td>
