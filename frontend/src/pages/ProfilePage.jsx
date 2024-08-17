@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Table, Form, Button, Row, Col, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -9,54 +10,67 @@ import Loader from "../components/Loader/Loader";
 import { useProfileMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
+import { useLogoutMutation } from "../slices/usersApiSlice";
+import { logout } from "../slices/authSlice";
 import { formatDate } from "../utils/dateUtils";
 
 const ProfilePage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-  const dispatch = useDispatch();
+        const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  const { userInfo } = useSelector((state) => state.auth);
+    const [logoutApiCall] = useLogoutMutation();
+    const logoutHandler = async () => {
+      try {
+        await logoutApiCall().unwrap();
+        dispatch(logout());
+        navigate("/login");
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+
+    const { userInfo } = useSelector((state) => state.auth);
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
-
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
   useEffect(() => {
     if (userInfo) {
-      setName(userInfo.name);
-      setEmail(userInfo.email);
+      setName(userInfo.name || "");
+      setEmail(userInfo.email || "");
     }
-  }, [userInfo]);
+  }, [userInfo, userInfo.name, userInfo.email]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Password does not match");
-    } else {
+      toast.error("Passwords do not match");
+    } else if (userInfo) {
       try {
         const res = await updateProfile({
-          _id: userInfo._id, // Ensure userInfo is defined here
+          _id: userInfo._id,
           name,
           email,
           password,
         }).unwrap();
+
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
       } catch (error) {
         toast.error(error?.data?.message || error.error);
       }
+    } else {
+      toast.error("User information is not available");
     }
   };
-
-  if (!userInfo) {
-    return <Message variant="danger">User not logged in</Message>;
-  }
 
   return (
     <Container>
@@ -72,7 +86,7 @@ const ProfilePage = () => {
                 placeholder="Enter Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
+              />
             </Form.Group>
 
             <Form.Group controlId="email" className="my-2">
@@ -82,7 +96,7 @@ const ProfilePage = () => {
                 placeholder="Enter Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-              ></Form.Control>
+              />
             </Form.Group>
 
             <Form.Group controlId="password" className="my-2">
@@ -92,7 +106,7 @@ const ProfilePage = () => {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-              ></Form.Control>
+              />
             </Form.Group>
 
             <Form.Group controlId="confirmPassword" className="my-2">
@@ -102,14 +116,15 @@ const ProfilePage = () => {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-              ></Form.Control>
+              />
             </Form.Group>
 
             <Button type="submit" variant="primary" className="my-2">
               Update
             </Button>
             {loadingUpdateProfile && <Loader />}
-          </Form>
+                  </Form>
+                  <span onClick={logoutHandler}>Logout</span>
         </Col>
 
         <Col md={9}>
@@ -130,7 +145,6 @@ const ProfilePage = () => {
                   <th>TOTAL</th>
                   <th>PAID</th>
                   <th>DELIVERED</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>

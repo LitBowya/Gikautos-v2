@@ -1,0 +1,127 @@
+.topProduct {
+  margin-inline: 35px;
+  margin-block: 50px;
+
+  .productContainer {
+    display: grid;
+    grid-template-columns: 0.25fr 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    height: 100%;
+  }
+
+  .div1 {
+    grid-area: 1 / 1 / 2 / 2;
+    height: 100%;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+      z-index: 1;
+    }
+
+    img {
+      position: relative;
+      width: 100%;
+      height: inherit;
+      z-index: 0;
+    }
+
+    .div1Text {
+      padding: 20px;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: start;
+      z-index: 2;
+
+      p:nth-child(1) {
+        font-size: 2rem;
+        font-weight: 500;
+        display: block;
+
+        span {
+          font-weight: 800;
+        }
+      }
+
+      p:nth-child(2) {
+        font-size: 1.2rem;
+        font-weight: 400;
+        text-wrap: wrap;
+        word-wrap: wrap;
+      }
+    }
+  }
+  .div2 {
+    grid-area: 1 / 2 / 2 / 3;
+    background-color: var(--white);
+    overflow-x: scroll;
+    padding: 15px;
+    border-radius: 0 15px 15px 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    h2 {
+      text-align: end;
+      font-size: 1.5rem;
+
+      span {
+        position: relative;
+        display: inline-block;
+        color: var(--orange);
+        &::before {
+          content: "";
+          display: inline-block;
+          width: 100%;
+          height: 3px;
+          background-color: var(--orange);
+          position: absolute;
+          bottom: -5px;
+          left: 0;
+        }
+      }
+    }
+
+    hr {
+      height: 3px;
+      opacity: 1;
+      background: var(--light-grey);
+      border: none;
+    }
+
+    .products {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .productContainer {
+      grid-template-columns: 1fr;
+    }
+
+    .div1 {
+      display: none;
+    }
+
+    .div2 {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+  }
+}

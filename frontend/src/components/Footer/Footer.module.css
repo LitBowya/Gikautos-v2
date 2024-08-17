@@ -1,0 +1,41 @@
+.footer {
+  background-color: #b3b3b3;
+  color: black;
+  padding-top: 20px;
+
+  .logo {
+    font-size: 2.5rem;
+    font-weight: 900;
+  }
+
+  .navLink {
+    color: black;
+    padding-inline: 0;
+    font-size: 16px;
+  }
+
+  .navLink:hover {
+    color: var(--dark-red);
+    text-decoration: none;
+    text-decoration: underline;
+  }
+
+  .btn{
+    display: flex;
+    justify-content: end;
+
+    button{
+        background: var(--dark-red);
+        color: white;
+        border: none;
+    }
+  }
+
+  .copyright {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    background-color: black;
+    color: white;
+    padding-block: 10px;
+  }
+}

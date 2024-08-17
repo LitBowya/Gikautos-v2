@@ -1,0 +1,32 @@
+.whyUs {
+  margin-block: 10px;
+  margin-inline: 35px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: white;
+  padding-block: 15px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.695);
+  border-radius: 5px;
+
+  .whyContainer {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .why {
+      display: flex;
+      flex-direction: column;
+
+      .title {
+        font-weight: 900 !important;
+      }
+    }
+  }
+}

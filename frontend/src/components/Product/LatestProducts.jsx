@@ -1,29 +1,47 @@
-import { Row, Col } from "react-bootstrap";
+
 import Product from "./Product";
 import Loader from "../Loader/Loader";
 import Message from "../Message/Message";
 import { useGetLatestProductsQuery } from "../../slices/productsApiSlice";
+import TopProductCss from './TopProduct.module.css'
 
 const TopProduct = () => {
-  const { data: products, isLoading, error } = useGetLatestProductsQuery();
+    const { data: products, isLoading, error } = useGetLatestProductsQuery();
+
   return (
-    <div>
+    <div className={TopProductCss.topProduct}>
       {isLoading ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : products ? (
-        <>
-          <h1>Latest Products</h1>
-
-          <Row>
-            {products.map((product) => (
-              <Col key={product._id} xs={6} md={4} xl={2} className="mb-3">
-                <Product product={product} />
-              </Col>
-            ))}
-          </Row>
-        </>
+        <div className={TopProductCss.productContainer}>
+          <div className={TopProductCss.div1}>
+            <img
+              src="/images/ProductSection/latest-products.jpg"
+              alt="topProduct"
+            />
+            <div className={TopProductCss.div1Text}>
+              <p>
+                Fresh <span>Arrivals</span>
+              </p>
+              <p>Cutting-edge parts for modern vehicles</p>
+            </div>
+          </div>
+          <div className={TopProductCss.div2}>
+            <h2>
+              Latest <span>Products</span>
+            </h2>
+            <hr />
+            <div className={TopProductCss.products}>
+              {products.map((product) => (
+                <div key={product._id} className={TopProductCss.product}>
+                  <Product product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       ) : (
         <Message variant="info">No products available</Message>
       )}

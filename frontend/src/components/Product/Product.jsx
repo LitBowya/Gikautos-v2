@@ -1,11 +1,12 @@
 import React from "react";
-import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import Rating from "../Rating/Rating";
 import { useAddToWishlistMutation } from "../../slices/wishlistSlice";
 import { useAddToCartMutation } from "../../slices/cartApiSlice";
+import Logo from "../Logo/Logo";
+import ProductCss from "./Product.module.css";
 
 const Product = ({ product }) => {
   const [addToWishlist] = useAddToWishlistMutation();
@@ -20,7 +21,8 @@ const Product = ({ product }) => {
       toast.error("Failed to add to wishlist");
     }
   };
-  const addToCarttHandler = async () => {
+
+  const addToCartHandler = async () => {
     try {
       await addToCart({ productId: product._id, quantity: 1 }).unwrap();
       toast.success("Item added to cart successfully");
@@ -31,76 +33,65 @@ const Product = ({ product }) => {
   };
 
   return (
-    <Card className="my-3 rounded" style={{ height: "300px" }}>
+    <div className={ProductCss.product}>
       {product.countInStock === 0 ? (
-        <>
-          <div
-            style={{
-              textDecoration: "none",
-              filter: "grayscale",
-              opacity: "0.4",
-              pointerEvents: "none",
-              cursor: "not-allowed",
-            }}
-          >
-            <Card.Img
-              src={product.image}
-              variant="top"
-              style={{ height: "200px" }}
-              className="p-1"
-            />
-            <Card.Body className="p-2">
-              <div
-                style={{
-                  textDecoration: "none",
-                  color: "gray",
-                }}
-              >
-                <Card.Title as="div" className="product-title">
-                  <span>{product.name}</span>
-                </Card.Title>
-              </div>
-              <span>Out Of Stock</span>
-              <Card.Text as="p">${product.price}</Card.Text>
-            </Card.Body>
+        <div
+          style={{
+            opacity: "0.4",
+            pointerEvents: "none",
+            cursor: "not-allowed",
+          }}
+        >
+          <img
+            src={product.image}
+            alt={product.name}
+            className={ProductCss.productImg}
+          />
+          <div className={ProductCss.productInfo}>
+            <div style={{ color: "gray" }}>
+              <h3 className={ProductCss.productName}>{product.name}</h3>
+            </div>
+            <span>Out Of Stock</span>
+            <p>${product.price}</p>
           </div>
-        </>
+        </div>
       ) : (
         <>
           <Link to={`/product/${product._id}`}>
-            <Card.Img
+            <img
               src={product.image}
-              variant="top"
-              className="p-1"
-              style={{ height: "180px" }}
+              alt={product.name}
+              className={ProductCss.productImg}
             />
           </Link>
-          <Card.Body className="p-2">
-            <Link
-              to={`/product/${product._id}`}
-              style={{
-                textDecoration: "none",
-                color: "orange",
-              }}
-            >
-              <Card.Title as="div" className="product-title">
-                <span>{product.name}</span>
-              </Card.Title>
+          <div className={ProductCss.productInfo}>
+            <Link to={`/product/${product._id}`} style={{ color: "black" }}>
+              <h3 className={ProductCss.productName}>{product.name}</h3>
             </Link>
-            <Card.Text as="div">
+            <div>
               <Rating
                 value={product.rating}
-                text={`${product.numReviews} reviews`}
+                text={`(${product.numReviews})`}
               />
-            </Card.Text>
-            <Card.Text as="p">${product.price}</Card.Text>
-
-            <FaHeart onClick={addToWishlistHandler} />
-            <FaShoppingCart onClick={addToCarttHandler} />
-          </Card.Body>
+            </div>
+            <div className={ProductCss.productFooter}>
+              <p>${product.price}</p>
+              <div className={ProductCss.productCart}>
+                <button onClick={addToWishlistHandler}>
+                  <FaHeart />
+                </button>
+                <button onClick={addToCartHandler}>
+                  <FaShoppingCart />
+                </button>
+              </div>
+            </div>
+            <div className={ProductCss.logo}>
+              <Logo />
+            </div>
+          </div>
         </>
       )}
-    </Card>
+    </div>
   );
 };
 

@@ -1,0 +1,8 @@
+.logo {
+      color: var(--black);
+      cursor: pointer;
+
+      span {
+        color: var(--dark-red);
+      }
+    }

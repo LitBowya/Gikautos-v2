@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Header from './components/Header/Header';
-import Loader from './components/Loader/Loader';
+import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Header from "./components/Header/Header";
+import Loader from "./components/Loader/Loader";
+
 import {
   useGetTopProductsQuery,
   useGetLatestProductsQuery,
   useGetMostPurchasedProductsQuery,
-} from './slices/productsApiSlice';
+} from "./slices/productsApiSlice";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -41,12 +42,12 @@ const App = () => {
       ) : (
         <div>
           <Header />
-          <main className=''>
+          <main className="">
             <Outlet />
           </main>
           {/* <Footer /> */}
           <ToastContainer
-            position='bottom-right'
+            position="bottom-right"
             autoClose={1500}
             hideProgressBar={false}
             newestOnTop={false}
