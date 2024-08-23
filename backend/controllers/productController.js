@@ -1,6 +1,16 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
+const fetchProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.json({ products });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
 const getProducts = asyncHandler(async (req, res) => {
   const keyword = req.query.keyword
     ? {
@@ -87,6 +97,11 @@ const createProduct = asyncHandler(async (req, res) => {
     countInStock: 0,
     numReviews: 0,
     description: "Sample description",
+    specifics: {
+      material: "Plastic",
+      size: "20kg",
+      color: "Red",
+    },
   });
 
   const createdProduct = await product.save();
@@ -94,8 +109,16 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock } =
-    req.body;
+  const {
+    name,
+    price,
+    description,
+    image,
+    brand,
+    category,
+    countInStock,
+    specifics, // Add this line to handle specifics
+  } = req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -107,6 +130,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.brand = brand;
     product.category = category;
     product.countInStock = countInStock;
+    product.specifics = specifics; // Add this line to handle specifics
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -115,6 +139,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("Product not found");
   }
 });
+
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
@@ -262,4 +287,5 @@ export {
   getAllProducts,
   getBrands,
   getCategories,
+  fetchProducts,
 };

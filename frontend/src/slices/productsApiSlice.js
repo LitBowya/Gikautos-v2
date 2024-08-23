@@ -3,6 +3,13 @@ import { apiSlice } from "./apiSlice";
 
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    fetchProducts: builder.query({
+      query: () => ({
+        url: `${PRODUCTS_URL}/allproducts`,
+      }),
+      providesTags: ["Products"],
+      keepUnusedDataFor: 5,
+    }),
     getProducts: builder.query({
       query: ({ pageNumber, keyword }) => ({
         url: PRODUCTS_URL,
@@ -125,11 +132,12 @@ export const productsApiSlice = apiSlice.injectEndpoints({
     }),
     getCategories: builder.query({
       query: () => `${PRODUCTS_URL}/categories`,
-    })
+    }),
   }),
 });
 
 export const {
+  useFetchProductsQuery,
   useGetProductsQuery,
   useGetProductDetailsQuery,
   useCreateProductMutation,

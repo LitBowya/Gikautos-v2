@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Table, Form, Button, Row, Col, Container } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Container,
+  Tabs,
+  Tab,
+  Accordion, // Import Accordion
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,29 +22,30 @@ import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
 import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
 import { formatDate } from "../utils/dateUtils";
+import ProfileCss from "./ProfilePage.module.css";
 
 const ProfilePage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [expandedOrderId, setExpandedOrderId] = useState(null); // Track expanded order
 
-        const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const [logoutApiCall] = useLogoutMutation();
-    const logoutHandler = async () => {
-      try {
-        await logoutApiCall().unwrap();
-        dispatch(logout());
-        navigate("/login");
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  const [logoutApiCall] = useLogoutMutation();
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-
-    const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
@@ -74,60 +84,87 @@ const ProfilePage = () => {
 
   return (
     <Container>
-      <Row>
-        <Col md={3}>
-          <h4>User Profile</h4>
+      <Tabs defaultActiveKey="profile" id="profile-tabs" className="mb-3">
+        <Tab eventKey="profile" title="Profile">
+          <div className={ProfileCss.profileContainer}>
+            <Form onSubmit={submitHandler} className={ProfileCss.form}>
+              <h3 className="text-center">User Profile</h3>
+              <div className={ProfileCss.inputContainer}>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={ProfileCss.inputField}
+                />
+                <span
+                  className={`${ProfileCss.placeholder} ${
+                    name ? ProfileCss.shrink : ""
+                  }`}
+                >
+                  Name
+                </span>
+              </div>
 
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId="name" className="my-2">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="name"
-                placeholder="Enter Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Form.Group>
+              <div className={ProfileCss.inputContainer}>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={ProfileCss.inputField}
+                />
+                <span
+                  className={`${ProfileCss.placeholder} ${
+                    email ? ProfileCss.shrink : ""
+                  }`}
+                >
+                  Email Address
+                </span>
+              </div>
 
-            <Form.Group controlId="email" className="my-2">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Form.Group>
+              <div className={ProfileCss.inputContainer}>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={ProfileCss.inputField}
+                />
+                <span
+                  className={`${ProfileCss.placeholder} ${
+                    password ? ProfileCss.shrink : ""
+                  }`}
+                >
+                  Password
+                </span>
+              </div>
 
-            <Form.Group controlId="password" className="my-2">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
+              <div className={ProfileCss.inputContainer}>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={ProfileCss.inputField}
+                />
+                <span
+                  className={`${ProfileCss.placeholder} ${
+                    confirmPassword ? ProfileCss.shrink : ""
+                  }`}
+                >
+                  Confirm Password
+                </span>
+              </div>
 
-            <Form.Group controlId="confirmPassword" className="my-2">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </Form.Group>
-
-            <Button type="submit" variant="primary" className="my-2">
-              Update
+              <Button type="submit" className={ProfileCss.submitButton}>
+                Update
+              </Button>
+              {loadingUpdateProfile && <Loader />}
+            </Form>
+            <Button className={ProfileCss.logoutButton} onClick={logoutHandler}>
+              Logout
             </Button>
-            {loadingUpdateProfile && <Loader />}
-                  </Form>
-                  <span onClick={logoutHandler}>Logout</span>
-        </Col>
+          </div>
+        </Tab>
 
-        <Col md={9}>
+        <Tab eventKey="orders" title="Orders">
           <h4>My Orders</h4>
           {isLoading ? (
             <Loader />
@@ -136,52 +173,65 @@ const ProfilePage = () => {
               {error?.data?.message || error.error}
             </Message>
           ) : (
-            <Table striped hover responsive className="table-sm">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>DATE</th>
-                  <th>PAYMENT METHOD</th>
-                  <th>TOTAL</th>
-                  <th>PAID</th>
-                  <th>DELIVERED</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr key={order._id}>
-                    <td>{order._id}</td>
-                    <td>{formatDate(order.createdAt)}</td>
-                    <td>{order.paymentMethod}</td>
-                    <td>$ {order.totalPrice.toFixed(2)}</td>
-                    <td>
+            <Accordion>
+              {orders.map((order) => (
+                <Accordion.Item
+                  key={order._id}
+                  eventKey={order._id}
+                  onClick={() =>
+                    setExpandedOrderId(
+                      expandedOrderId === order._id ? null : order._id
+                    )
+                  }
+                >
+                  <Accordion.Header>
+                    <Row>
+                      <Col>ID: {order._id}</Col>
+                      <Col>Date: {formatDate(order.createdAt)}</Col>
+                      <Col>Total: GHS {order.totalPrice.toFixed(2)}</Col>
+                    </Row>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <p>
+                      <strong>ID:</strong> {order._id}
+                    </p>
+                    <p>
+                      <strong>Date:</strong> {formatDate(order.createdAt)}
+                    </p>
+                    <p>
+                      <strong>Payment Method:</strong> {order.paymentMethod}
+                    </p>
+                    <p>
+                      <strong>Total:</strong> GHS {order.totalPrice.toFixed(2)}
+                    </p>
+                    <p>
+                      <strong>Paid:</strong>{" "}
                       {order.isPaid ? (
                         formatDate(order.paidAt)
                       ) : (
                         <FaTimes style={{ color: "red" }} />
                       )}
-                    </td>
-                    <td>
+                    </p>
+                    <p>
+                      <strong>Delivered:</strong>{" "}
                       {order.isDelivered ? (
                         formatDate(order.deliveredAt)
                       ) : (
                         <FaTimes style={{ color: "red" }} />
                       )}
-                    </td>
-                    <td>
-                      <LinkContainer to={`/order/${order._id}`}>
-                        <Button className="btn-sm" variant="light">
-                          Details
-                        </Button>
-                      </LinkContainer>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                    </p>
+                    <LinkContainer to={`/order/${order._id}`}>
+                      <Button className="btn-sm" variant="primary">
+                        Details
+                      </Button>
+                    </LinkContainer>
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
           )}
-        </Col>
-      </Row>
+        </Tab>
+      </Tabs>
     </Container>
   );
 };

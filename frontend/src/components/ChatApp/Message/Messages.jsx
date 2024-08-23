@@ -255,11 +255,12 @@ export const Messages = () => {
   };
 
   return (
-    <div>
+    <div className="messages_container">
       <MessageHeader
         searchTermChange={searchTermChange}
         uniqueUsers={uniqueUsersCount()}
         isPrivateChat={isPrivateChat}
+        className="message_header"
       />
       <Segment className="message_content">
         <Comment.Group>
@@ -271,7 +272,8 @@ export const Messages = () => {
         editingMessage={editingMessage}
         onEditMessage={handleEditMessage}
         replyToMessage={replyingToMessage}
-        onAddReply={handleAddReply}
+              onAddReply={handleAddReply}
+              className="message_input"
       />
     </div>
   );

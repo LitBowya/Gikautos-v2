@@ -1,7 +1,15 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Row, Col, ListGroup, Image, Card, Container } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Card,
+  Container,
+} from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Message from "../components/Message/Message";
 import CheckoutSteps from "../components/Checkout Steps/CheckoutSteps";
@@ -14,7 +22,7 @@ import {
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
-  const {userInfo} = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   const cart = useSelector((state) => state.cart);
 
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
@@ -95,7 +103,7 @@ const PlaceOrderPage = () => {
       await clearCartHandler();
       navigate(`/order/${res._id}`);
     } catch (error) {
-      console.error('Error', error);
+      console.error("Error", error);
       toast.error(error);
     }
   };
@@ -165,8 +173,8 @@ const PlaceOrderPage = () => {
                             </Col>
                             <Col>{item.product.name}</Col>
                             <Col md={4}>
-                              {parseInt(item.quantity)} x ${item.product.price}{" "}
-                              = $
+                              {parseInt(item.quantity)} x GHS {item.product.price}{" "}
+                              = GHS
                               {(
                                 parseInt(item.quantity) * item.product.price
                               ).toFixed(2)}
@@ -182,7 +190,12 @@ const PlaceOrderPage = () => {
           </ListGroup>
         </Col>
         <Col md={4}>
-          <Card>
+          <Card
+            style={{
+              position: "sticky",
+              top: "10px",
+            }}
+          >
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h4>Order Summary</h4>
@@ -190,20 +203,20 @@ const PlaceOrderPage = () => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${calculateTotalItemPrice().toFixed(2)}</Col>
+                  <Col>GHS {calculateTotalItemPrice().toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${cart.shippingPrice}</Col>
+                  <Col>GHS {cart.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${totalPrice.toFixed(2)}</Col>
+                  <Col>GHS {totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

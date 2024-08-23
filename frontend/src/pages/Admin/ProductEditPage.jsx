@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import Message from "../../components/Message/Message";
@@ -21,6 +21,7 @@ const ProductEditPage = () => {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [specifics, setSpecifics] = useState([]);
 
   const {
     data: product,
@@ -35,6 +36,7 @@ const ProductEditPage = () => {
     useUploadProductImageMutation();
 
   const navigate = useNavigate();
+  const inputRefs = useRef({});
 
   useEffect(() => {
     if (product) {
@@ -45,13 +47,48 @@ const ProductEditPage = () => {
       setCategory(product.category);
       setCountInStock(product.countInStock);
       setDescription(product.description);
+      setSpecifics(
+        product.specifics
+          ? Object.entries(product.specifics).map(([key, value], index) => ({
+              id: index,
+              key,
+              value,
+            }))
+          : []
+      );
     }
   }, [product]);
+
+  const handleSpecificsChange = (id, field, value) => {
+    setSpecifics((prevSpecifics) =>
+      prevSpecifics.map((specific) =>
+        specific.id === id ? { ...specific, [field]: value } : specific
+      )
+    );
+  };
+
+  const addSpecificsField = () => {
+    setSpecifics((prevSpecifics) => [
+      ...prevSpecifics,
+      { id: Date.now(), key: "", value: "" },
+    ]);
+  };
+
+  const removeSpecificsField = (id) => {
+    setSpecifics((prevSpecifics) =>
+      prevSpecifics.filter((specific) => specific.id !== id)
+    );
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
+      const specificsObject = specifics.reduce(
+        (obj, item) => ({ ...obj, [item.key]: item.value }),
+        {}
+      );
+
       await updateProduct({
         productId,
         name,
@@ -61,6 +98,7 @@ const ProductEditPage = () => {
         category,
         description,
         countInStock,
+        specifics: specificsObject, // Convert array to object before submitting
       }).unwrap();
       toast.success("Product updated");
       navigate("/admin/productlist");
@@ -69,18 +107,18 @@ const ProductEditPage = () => {
     }
   };
 
-    const uploadFileHandler = async (e) => {
-      const formData = new FormData();
-      formData.append("image", e.target.files[0]);
-      try {
-        const res = await uploadProductImage(formData).unwrap();
-        toast.success(res.message);
-        setImage(res.image);
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    };
-  
+  const uploadFileHandler = async (e) => {
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      toast.success(res.message);
+      setImage(res.image);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
   return (
     <div className="container">
       <Link to="/admin/productlist" className="btn btn-light my-3">
@@ -98,7 +136,7 @@ const ProductEditPage = () => {
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>Name</Form.Label>
               <Form.Control
-                type="name"
+                type="text"
                 placeholder="Enter name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -169,6 +207,46 @@ const ProductEditPage = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Specifics</Form.Label>
+              {specifics.map((specific) => (
+                <div key={specific.id} className="d-flex mb-2">
+                  <Form.Control
+                    type="text"
+                    placeholder="Key"
+                    value={specific.key}
+                    onChange={(e) =>
+                      handleSpecificsChange(specific.id, "key", e.target.value)
+                    }
+                    className="me-2"
+                    ref={(el) => (inputRefs.current[specific.id] = el)}
+                  />
+                  <Form.Control
+                    type="text"
+                    placeholder="Value"
+                    value={specific.value}
+                    onChange={(e) =>
+                      handleSpecificsChange(
+                        specific.id,
+                        "value",
+                        e.target.value
+                      )
+                    }
+                    className="me-2"
+                  />
+                  <Button
+                    variant="danger"
+                    onClick={() => removeSpecificsField(specific.id)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button variant="secondary" onClick={addSpecificsField}>
+                Add Specifics
+              </Button>
             </Form.Group>
 
             <Button

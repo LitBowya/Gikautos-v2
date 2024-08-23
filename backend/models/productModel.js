@@ -73,6 +73,10 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    specifics: {
+      type: Map,
+      of: String,
+    },
   },
   {
     timestamps: true,

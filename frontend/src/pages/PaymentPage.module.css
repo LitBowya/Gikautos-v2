@@ -1,0 +1,61 @@
+.paymentScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.paymentTitle {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: white;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.radioIcon {
+  font-size: 1.5rem;
+  color: var(--dark-red);
+}
+
+.radioInput {
+  margin-right: 10px;
+}
+
+.submitButton {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background-color: var(--dark-red);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: var(--orange);
+}

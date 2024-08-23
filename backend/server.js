@@ -18,7 +18,6 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 
 // Import utilities and middleware
 import connectDB from "./config/db.js";
-import configureSocket from "./config/socket.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();

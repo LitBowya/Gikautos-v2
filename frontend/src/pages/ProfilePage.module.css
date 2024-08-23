@@ -1,0 +1,88 @@
+/* ProfilePage.module.css */
+
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.form {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.367);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: white;
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.inputField {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.inputField:focus {
+  border-color: var(--dark-red);
+}
+
+.placeholder {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  color: #999;
+  pointer-events: none;
+}
+
+.shrink {
+  top: 0;
+  left: 10px;
+  background-color: white;
+  padding-inline: 3px;
+  font-size: 12px;
+  color: var(--dark-red);
+}
+
+.submitButton {
+  padding: 10px;
+  background-color: var(--dark-red);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:disabled {
+  background-color: #ccc;
+}
+
+.logoutButton {
+  margin-top: 20px;
+  background-color: var(--dark-red);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: darkred;
+}

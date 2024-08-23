@@ -1,7 +1,21 @@
-import { useEffect } from "react";
-import { LinkContainer } from "react-router-bootstrap";
-import { Table, Button } from "react-bootstrap";
-import { FaTimes } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Box,
+  TablePagination,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import { Button } from "@mui/material";
+import { FaTimes, FaSearch } from "react-icons/fa";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
 import { useGetOrdersQuery } from "../../slices/ordersApiSlice";
@@ -9,68 +23,144 @@ import { formatDate } from "../../utils/dateUtils";
 
 const OrderListPage = () => {
   const { data: orders, isLoading, error, refetch } = useGetOrdersQuery();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
     refetch();
-  }, [orders, refetch]);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (orders) {
+      const filtered = orders.filter((order) =>
+        order.user?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOrders(filtered);
+    }
+  }, [orders, searchTerm]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedOrders = filteredOrders.slice(startIndex, endIndex);
 
   return (
     <div className="container">
-      <h1>Orders</h1>
+      <Typography variant="h4" gutterBottom>
+        Orders
+      </Typography>
+      <TextField
+        variant="outlined"
+        label="Search by User"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <FaSearch />
+            </InputAdornment>
+          ),
+        }}
+      />
       {isLoading ? (
         <Loader />
       ) : error ? (
-        // Ensure you're accessing the message correctly
         <Message variant="danger">
           {error.message || "An error occurred"}
         </Message>
       ) : (
-        <Table striped hover responsive className="table-sm">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>USER</th>
-              <th>DATE</th>
-              <th>TOTAL</th>
-              <th>PAYMENT METHOD</th>
-              <th>PAID</th>
-              <th>DELIVERED</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders?.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>{order.user && order.user.name}</td>
-                <td>{formatDate(order.createdAt)}</td>
-                <td>{order.totalPrice.toFixed(2)}</td>
-                <td>{order.paymentMethod}</td>
-                <td>
-                  {order.isPaid ? (
-                    formatDate(order.paidAt)
-                  ) : (
-                    <FaTimes style={{ color: "red" }} />
-                  )}
-                </td>
-                <td>
-                  {order.isDelivered ? (
-                    formatDate(order.deliveredAt)
-                  ) : (
-                    <FaTimes style={{ color: "red" }} />
-                  )}
-                </td>
-                <td>
-                  <LinkContainer to={`/order/${order._id}`}>
-                    <Button variant="primary" className="btn-sm">
-                      Details
-                    </Button>
-                  </LinkContainer>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Image</TableCell>
+                  <TableCell>User</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Total</TableCell>
+                  <TableCell>Payment Method</TableCell>
+                  <TableCell>Paid</TableCell>
+                  <TableCell>Delivered</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedOrders.map((order) => (
+                  <TableRow key={order._id}>
+                    <TableCell>
+                      <Box
+                        component="img"
+                        src={
+                          order.orderItems && order.orderItems.length > 0
+                            ? order.orderItems[0].image
+                            : "https://via.placeholder.com/50"
+                        }
+                        alt={`Order ${order._id}`}
+                        sx={{
+                          width: 50,
+                          height: 50,
+                          objectFit: "cover",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell>{order.user && order.user.name}</TableCell>
+                    <TableCell>{formatDate(order.createdAt)}</TableCell>
+                    <TableCell>GHS {order.totalPrice.toFixed(2)}</TableCell>
+                    <TableCell>{order.paymentMethod}</TableCell>
+                    <TableCell>
+                      {order.isPaid ? (
+                        formatDate(order.paidAt)
+                      ) : (
+                        <FaTimes style={{ color: "red" }} />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {order.isDelivered ? (
+                        formatDate(order.deliveredAt)
+                      ) : (
+                        <FaTimes style={{ color: "red" }} />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Link to={`/order/${order._id}`}>
+                        <Button variant="contained" color="primary">
+                          Details
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={filteredOrders.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
       )}
     </div>
   );

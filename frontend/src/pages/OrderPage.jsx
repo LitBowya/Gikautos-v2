@@ -1,6 +1,14 @@
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Row, Col, ListGroup, Image, Card, Button, Container } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  ListGroup,
+  Image,
+  Card,
+  Button,
+  Container,
+} from "react-bootstrap";
 import { toast } from "react-toastify";
 import Message from "../components/Message/Message";
 import Loader from "../components/Loader/Loader";
@@ -9,16 +17,21 @@ import VerifyPayment from "../components/PayStack/VerifyPayment";
 import {
   useGetOrderDetailsQuery,
   useDeliverOrderMutation,
-  usePayOnDeliveryOrderMutation
+  usePayOnDeliveryOrderMutation,
 } from "../slices/ordersApiSlice";
-import {formatDate} from "../utils/dateUtils.js";
+import { formatDate } from "../utils/dateUtils.js";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const { data: order, isLoading, error, refetch } = useGetOrderDetailsQuery(orderId);
+  const {
+    data: order,
+    isLoading,
+    error,
+    refetch,
+  } = useGetOrderDetailsQuery(orderId);
 
   const [deliverOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
@@ -129,15 +142,17 @@ const OrderPage = () => {
               ) : (
                 <Message variant="danger">Not Paid</Message>
               )}
-              {userInfo && userInfo.isAdmin && !order.isPaid && (
-                <Button
-                  type="button"
-                  className="btn btn-block"
-                  onClick={payOnDeliveryOrderHandler}
-                >
-                  Mark As Paid
-                </Button>
-              )}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.paymentMethod === "On Delivery" && (
+                  <Button
+                    type="button"
+                    className="btn btn-block"
+                    onClick={payOnDeliveryOrderHandler}
+                  >
+                    Mark As Paid
+                  </Button>
+                )}
             </ListGroup.Item>
 
             <ListGroup.Item>
@@ -161,7 +176,8 @@ const OrderPage = () => {
                           <span>{item.name}</span>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                          {item.qty} x GHS {item.price} = GHS{" "}
+                          {item.qty * item.price}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -173,7 +189,12 @@ const OrderPage = () => {
         </Col>
 
         <Col md={4}>
-          <Card>
+          <Card
+            style={{
+              position: "sticky",
+              top: "10px",
+            }}
+          >
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h6>Order Summary</h6>
@@ -182,19 +203,19 @@ const OrderPage = () => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${order.itemsPrice}</Col>
+                  <Col>GHS {order.itemsPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${order.shippingPrice}</Col>
+                  <Col>GHS {order.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${order.totalPrice.toFixed(2)}</Col>
+                  <Col>GHS {order.totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
@@ -219,7 +240,7 @@ const OrderPage = () => {
                       </div>
                     ) : (
                       <div>
-                        {!userInfo.isAdmin && (
+                        {userInfo && (
                           <>
                             <PayStack /> <VerifyPayment orderId={orderId} />
                           </>

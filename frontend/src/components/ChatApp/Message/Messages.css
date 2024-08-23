@@ -1,4 +1,24 @@
-.message_content{
-    height: 450px;
-    overflow-y: scroll;
+.messages_container {
+  padding-left: 18rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.message_header {
+  flex: 1;
+}
+
+.message_content {
+  flex: 3;
+  overflow-y: scroll;
+  width: 100% !important;
+}
+
+.message_input {
+  flex: 1;
+}
+
+.ui.comments{
+    max-width: 100% !important;
 }

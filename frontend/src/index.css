@@ -1,12 +1,16 @@
-:root{
-    --dark-red: rgb(146, 9, 9);
-    --yellow: rgb(255, 255, 0);
-    --orange: rgb(255, 165, 0);
-    --black: rgba(0, 0, 0);
-    --white: rgba(255, 255, 255);
-    --light-grey: rgba(234, 234, 234, 0.34);
+:root {
+  --dark-red: rgb(146, 9, 9);
+  --yellow: rgb(255, 255, 0);
+  --orange: rgb(255, 165, 0);
+  --black: rgba(0, 0, 0);
+  --white: rgba(255, 255, 255);
+  --light-grey: rgba(234, 234, 234, 0.34);
 }
-
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 html,
 body {
   margin: 0;
@@ -16,24 +20,22 @@ body {
   background-color: #f0f0f0;
 }
 
-ul{
-    margin: 0;
-    padding: 0;
+ul {
+  margin: 0;
+  padding: 0;
 }
 
-li{
-    list-style: none;
+li {
+  list-style: none;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }
 
 main {
   min-height: 80vh;
 }
-
-
 
 .product-title {
   height: 2.5em;

@@ -1,8 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
-import Token from "../models/tokeModel.js";
-import {sendEmail} from "../utils/sendEmail.js";
 import dotenv from "dotenv";
 import crypto from "crypto";
 
@@ -64,13 +62,6 @@ const registerUser = asyncHandler(async (req, res) => {
     mechanicDetails: isMechanic ? mechanicDetails : null,
     reviews: isMechanic ? [] : null,
   });
-
-  const token = await new Token({
-    userId: User._id,
-    token: crypto.randomBytes(32).toString("hex"),
-  }).save();
-  const url = `${process.env.BASE_URL}users/${User.id}/verify/${token.token}`;
-  await sendEmail(User.email, "Verify Email", url);
 
   if (newUser) {
     res.status(201).json({

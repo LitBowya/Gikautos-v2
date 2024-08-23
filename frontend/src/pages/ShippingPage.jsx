@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { FaCartPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { saveShippingAddress } from "../slices/cartSlice";
 import FormContainer from "../components/Form/FormContainer";
 import CheckoutSteps from "../components/Checkout Steps/CheckoutSteps";
+import ShippingCss from "./ShippingPage.module.css";
 
 const ShippingPage = () => {
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
-  // Initialize state with existing shipping address or empty values
   const [address, setAddress] = useState(shippingAddress?.address || "");
   const [city, setCity] = useState(shippingAddress?.city || "");
   const [phoneNumber, setPhoneNumber] = useState(
@@ -24,13 +25,14 @@ const ShippingPage = () => {
   );
   const [region, setRegion] = useState(shippingAddress?.region || "");
 
+  const [focusedInput, setFocusedInput] = useState(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    // Dispatch action to save shipping address
     dispatch(
       saveShippingAddress({
         address,
@@ -44,81 +46,95 @@ const ShippingPage = () => {
     navigate("/payment");
   };
 
+  const handleInputFocus = (input) => {
+    setFocusedInput(input);
+  };
+
+  const handleInputBlur = (e, input) => {
+    setFocusedInput(e.target.value !== "" ? input : null);
+  };
+
   return (
-    <FormContainer>
-      <CheckoutSteps step1 step2 />
+    <div className={ShippingCss.shipping}>
+      <div className={ShippingCss.left}>
+        <img src="/images/ShopPage/shipping.jpg" alt="Shipping Visual" />
+              <div className={ShippingCss.leftText}>
+                  <FaCartPlus size={50} className={ShippingCss.icon} />
+          <h1>
+            <span>Fast</span> Delivery
+          </h1>
+          <p>
+            Your <span>gateway</span> to swift shipping
+          </p>
+        </div>
+      </div>
+      <div className={ShippingCss.right}>
+        <FormContainer>
+          <CheckoutSteps step1 step2 />
 
-      <h1>Shipping</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId="phoneNumber" className="my-2">
-          <Form.Label>Phone Number</Form.Label>
-          <Form.Control
-            required
-            type="number"
-            placeholder="Enter Phone Number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+          <Form onSubmit={submitHandler} className={ShippingCss.form}>
+            <h1>Shipping</h1>
+            {[
+              {
+                id: "phoneNumber",
+                label: "Phone Number",
+                value: phoneNumber,
+                setter: setPhoneNumber,
+              },
+              {
+                id: "otherPhoneNumber",
+                label: "Other Phone Number",
+                value: otherPhoneNumber,
+                setter: setOtherPhoneNumber,
+              },
+              {
+                id: "region",
+                label: "Region",
+                value: region,
+                setter: setRegion,
+              },
+              { id: "city", label: "City", value: city, setter: setCity },
+              {
+                id: "address",
+                label: "GP Address",
+                value: address,
+                setter: setAddress,
+              },
+              {
+                id: "additionalInformation",
+                label: "Additional Information",
+                value: additionalInformation,
+                setter: setAdditionalInformation,
+              },
+            ].map(({ id, label, value, setter }) => (
+              <div className={ShippingCss.inputContainer} key={id}>
+                <input
+                  id={id}
+                  required
+                  type="text"
+                  value={value}
+                  onChange={(e) => setter(e.target.value)}
+                  onFocus={() => handleInputFocus(id)}
+                  onBlur={(e) => handleInputBlur(e, id)}
+                  className={ShippingCss.inputField}
+                />
+                <span
+                  className={`${ShippingCss.placeholder} ${
+                    focusedInput === id || value ? ShippingCss.shrink : ""
+                  }`}
+                >
+                  {label}
+                </span>
+              </div>
+            ))}
 
-        <Form.Group controlId="otherPhoneNumber" className="my-2">
-          <Form.Label>Other Phone Number</Form.Label>
-          <Form.Control
-            required
-            type="number"
-            placeholder="Enter Other Phone Number"
-            value={otherPhoneNumber}
-            onChange={(e) => setOtherPhoneNumber(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId="region" className="my-2">
-          <Form.Label>Region</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter Region"
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId="city" className="my-2">
-          <Form.Label>City</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId="address" className="my-2">
-          <Form.Label>GP Address</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter GP Address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId="additionalInformation" className="my-2">
-          <Form.Label>Additional Information</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter additional information"
-            value={additionalInformation}
-            onChange={(e) => setAdditionalInformation(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Button type="submit" className="my-2">
-          Continue
-        </Button>
-      </Form>
-    </FormContainer>
+            <Button type="submit" className={ShippingCss.submitButton}>
+              Continue
+            </Button>
+          </Form>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

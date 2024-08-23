@@ -1,0 +1,162 @@
+/* MessageContent.module.css */
+.comments {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.comment,
+.ownMessage {
+    width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.ownMessage {
+  .content {
+    align-self: flex-end !important;
+    width: 450px !important;
+    max-width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    background: var(--dark-red) !important;
+    border-radius: 15px 15px 0 15px !important;
+    padding: 10px;
+  }
+
+  .down {
+    color: white !important;
+  }
+}
+
+.content {
+  width: 450px !important;
+  max-width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  background-color: #f1f0f0;
+  border-radius: 15px 15px 15px 0;
+  padding: 10px;
+}
+
+.ownMessageContent {
+  background-color: var(--dark-red) !important;
+}
+
+.commentAvatar,
+.ownMessageAvatar {
+  margin-right: 10px;
+}
+
+.ownMessageAvatar {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.commentAuthor,
+.ownMessageAuthor {
+  font-weight: bold;
+}
+
+.ownMessageAuthor {
+  color: #fff !important;
+  padding-left: 5px !important;
+}
+
+.ownMessageMetadata {
+  color: white !important;
+}
+
+.commentMetadata {
+  font-size: 0.8em;
+  color: #999;
+  margin-top: 5px;
+}
+
+.ownMessageMetadata {
+  color: #ccc;
+}
+
+.commentText,
+.ownMessageText {
+  margin-top: 5px !important;
+}
+
+.ownMessageText {
+  color: #fff !important;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actionsIcon {
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.ownMessageIcon {
+  color: #fff !important;
+}
+
+.reactions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.reactionsLabel {
+  background-color: #ffcccc;
+  color: #000;
+}
+
+.commentImage,
+.ownMessageImage {
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.repliesComment {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.repliesButton {
+  background-color: transparent;
+  border: none;
+  color: #4183c4;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 10px;
+  text-align: left;
+  font-size: 0.9em;
+}
+
+.repliesButton:hover {
+  text-decoration: underline;
+}
+
+.repliesButton:focus {
+  outline: none;
+}
+
+.ownMessageButton {
+  color: #fff !important;
+}
+
+.down {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}

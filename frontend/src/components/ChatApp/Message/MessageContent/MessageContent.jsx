@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Comment, Image, Icon, Popup, Label, Button } from "semantic-ui-react";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-import "./MessageContent.css";
+import MessageContentCss from "./MessageContent.module.css";
 
 const MessageContent = ({
   message,
@@ -38,7 +38,7 @@ const MessageContent = ({
         key={emoji}
         content={groupedReactions[emoji].join(", ")}
         trigger={
-          <Label circular>
+          <Label circular className={MessageContentCss.reactionsLabel}>
             {emoji} {groupedReactions[emoji].length}
           </Label>
         }
@@ -51,12 +51,22 @@ const MessageContent = ({
     const repliesArray = Object.values(message.replies);
 
     return repliesArray.map((reply) => (
-      <Comment key={reply.id}>
-        <Comment.Content>
-          <Comment.Avatar src={reply.profilePicture} />
-          <Comment.Author>{reply.userName}</Comment.Author>
-          <Comment.Metadata>{reply.createdTime}</Comment.Metadata>
-          <Comment.Text style={{ whiteSpace: "pre-wrap" }}>
+      <Comment key={reply.id} className={MessageContentCss.repliesComment}>
+        <Comment.Content className={MessageContentCss.repliesContent}>
+          <Comment.Avatar
+            src={reply.profilePicture}
+            className={MessageContentCss.repliesAvatar}
+          />
+          <Comment.Author className={MessageContentCss.repliesAuthor}>
+            {reply.userName}
+          </Comment.Author>
+          <Comment.Metadata className={MessageContentCss.repliesMetadata}>
+            {reply.createdTime}
+          </Comment.Metadata>
+          <Comment.Text
+            className={MessageContentCss.repliesText}
+            style={{ whiteSpace: "pre-wrap" }}
+          >
             {reply.content}
           </Comment.Text>
         </Comment.Content>
@@ -65,66 +75,131 @@ const MessageContent = ({
   };
 
   return (
-    <Comment className={ownMessage ? "ownMessage" : null}>
-      <Comment.Content>
-        <Comment.Avatar src={message.user.profilePicture} />
-        <Comment.Author>{message.user.name}</Comment.Author>
-        <Comment.Metadata>{message.createdTime}</Comment.Metadata>
+    <Comment
+      className={
+        ownMessage ? MessageContentCss.ownMessage : MessageContentCss.comment
+      }
+    >
+      <Comment.Content className={MessageContentCss.content}>
+        <div className={MessageContentCss.top}>
+          <Comment.Avatar
+            src={message.user.profilePicture}
+            className={
+              ownMessage
+                ? MessageContentCss.ownMessageAvatar
+                : MessageContentCss.commentAvatar
+            }
+          />
+          <Comment.Author
+            className={
+              ownMessage
+                ? MessageContentCss.ownMessageAuthor
+                : MessageContentCss.commentAuthor
+            }
+          >
+            {message.user.name}
+          </Comment.Author>
+        </div>
+
         {message.image ? (
-          <Image src={message.image} />
+          <Image src={message.image} className={MessageContentCss.image} />
         ) : (
-          <Comment.Text style={{ whiteSpace: "pre-wrap" }}>
+          <Comment.Text
+            className={
+              ownMessage
+                ? MessageContentCss.ownMessageText
+                : MessageContentCss.commentText
+            }
+            // style={{ whiteSpace: "pre-wrap" }}
+          >
             {message.content}
           </Comment.Text>
         )}
-        {renderReactions()}
-        <Comment.Actions>
-          {ownMessage && (
-            <>
-              <Popup
-                trigger={<Icon name="edit" />}
-                content={
-                  <Button onClick={() => onEdit(message.id, message.content)}>
-                    Edit
-                  </Button>
-                }
-                on="click"
-                position="top center"
-              />
-              <Popup
-                trigger={
-                  <Icon name="smile" onClick={() => setShowEmojiPicker(true)} />
-                }
-                content={
-                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
-                }
-                on="click"
-                open={showEmojiPicker}
-                onClose={() => setShowEmojiPicker(false)}
-              />
-              <Icon name="trash" onClick={() => onDelete(message.id)} />
-            </>
-          )}
-          {!ownMessage && (
-            <>
-              <Icon name="reply" onClick={() => onReply(message)} />
-              <Popup
-                trigger={
-                  <Icon name="smile" onClick={() => setShowEmojiPicker(true)} />
-                }
-                content={
-                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
-                }
-                on="click"
-                open={showEmojiPicker}
-                onClose={() => setShowEmojiPicker(false)}
-              />
-            </>
-          )}
-        </Comment.Actions>
+        <div className={MessageContentCss.reactions}>{renderReactions()}</div>
+        <div className={MessageContentCss.down}>
+          <Comment.Metadata
+            className={
+              ownMessage
+                ? MessageContentCss.ownMessageMetadata
+                : MessageContentCss.commentMetadata
+            }
+          >
+            {message.createdTime}
+          </Comment.Metadata>
+          <Comment.Actions className={MessageContentCss.actions}>
+            {ownMessage ? (
+              <>
+                <Popup
+                  trigger={
+                    <Icon
+                      name="edit"
+                      className={MessageContentCss.actionsIcon}
+                    />
+                  }
+                  content={
+                    <Button
+                      className={MessageContentCss.actionsButton}
+                      onClick={() => onEdit(message.id, message.content)}
+                    >
+                      Edit
+                    </Button>
+                  }
+                  on="click"
+                  position="top center"
+                />
+                <Popup
+                  trigger={
+                    <Icon
+                      name="smile"
+                      className={MessageContentCss.actionsIcon}
+                      onClick={() => setShowEmojiPicker(true)}
+                    />
+                  }
+                  content={
+                    <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                  }
+                  on="click"
+                  open={showEmojiPicker}
+                  onClose={() => setShowEmojiPicker(false)}
+                />
+                <Icon
+                  name="trash"
+                  className={MessageContentCss.actionsIcon}
+                  onClick={() => onDelete(message.id)}
+                />
+              </>
+            ) : (
+              <>
+                <Icon
+                  name="reply"
+                  className={MessageContentCss.actionsIcon}
+                  onClick={() => onReply(message)}
+                />
+                <Popup
+                  trigger={
+                    <Icon
+                      name="smile"
+                      className={MessageContentCss.actionsIcon}
+                      onClick={() => setShowEmojiPicker(true)}
+                    />
+                  }
+                  content={
+                    <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                  }
+                  on="click"
+                  open={showEmojiPicker}
+                  onClose={() => setShowEmojiPicker(false)}
+                />
+              </>
+            )}
+          </Comment.Actions>
+        </div>
       </Comment.Content>
       {message.replies && Object.keys(message.replies).length > 0 && (
-        <Button onClick={() => setShowReplies(!showReplies)}>
+        <Button
+          className={MessageContentCss.repliesButton}
+          onClick={() => setShowReplies(!showReplies)}
+        >
           {showReplies
             ? "Hide replies"
             : `Show replies (${Object.keys(message.replies).length})`}

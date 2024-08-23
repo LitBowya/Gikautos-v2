@@ -1,0 +1,158 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 400px; /* Adjust height as needed */
+  overflow: hidden;
+  transition: 0.25s all;
+}
+
+.carouselImage {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.carouselText {
+  position: absolute;
+  bottom: 0;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.679);
+  padding: 10px;
+  border-radius: 0 15px 15px 0;
+
+  h3 {
+    margin: 0;
+    font-size: 2.5rem;
+    word-spacing: 10px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--orange);
+  }
+}
+
+.carouselDots {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 5px;
+  background-color: gray;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: white;
+}
+
+.carouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: opacity 0.3s ease;
+  display: none; /* Initially hidden */
+  transition: 0.25s all;
+}
+
+.carouselButton:hover {
+  color: black;
+  background-color: rgb(255, 255, 255);
+}
+
+.carousel:hover .carouselButton {
+  display: block;
+  transition: 0.25s all;
+}
+
+.prevButton {
+  left: 20px;
+  transition: 0.25s all;
+}
+
+.nextButton {
+  right: 20px;
+  transition: 0.25s all;
+}
+
+.filterSidebar {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 15px;
+}
+
+.productsRow {
+  position: relative;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.512);
+  padding-block: 15px;
+
+  .productsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 10px;
+    h2 {
+      margin: 0;
+      color: var(--orange);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    height: 300px; /* Reduced height on smaller screens */
+  }
+
+  .carouselText {
+    font-size: 12px; /* Smaller text on smaller screens */
+    bottom: 10px;
+    left: 10px;
+  }
+
+  .filterSidebar {
+    height: 100vh !important;
+    width: 50vw !important;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel {
+    height: 200px; /* Further reduced height on extra small screens */
+  }
+
+  .carouselText {
+    font-size: 10px;
+    bottom: 5px;
+    left: 5px;
+  }
+}

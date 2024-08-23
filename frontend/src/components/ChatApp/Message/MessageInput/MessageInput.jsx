@@ -186,6 +186,7 @@ const MessageInput = ({
       )}
       {editingMessage && <Message>Editing: {editingMessage.content}</Message>}
       <TextArea
+        className="form-control"
         fluid={true}
         name="message"
         value={messageState}
@@ -197,7 +198,7 @@ const MessageInput = ({
         open={fileDialogState}
         onClose={() => setFileDialog(false)}
       />
-      {createActionButtons()}
+      <div className="text-end py-2">{createActionButtons()}</div>
     </Segment>
   );
 };

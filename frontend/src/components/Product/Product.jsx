@@ -69,13 +69,10 @@ const Product = ({ product }) => {
               <h3 className={ProductCss.productName}>{product.name}</h3>
             </Link>
             <div>
-              <Rating
-                value={product.rating}
-                text={`(${product.numReviews})`}
-              />
+              <Rating value={product.rating} text={`(${product.numReviews})`} />
             </div>
             <div className={ProductCss.productFooter}>
-              <p>${product.price}</p>
+              <p>GHS {product.price}</p>
               <div className={ProductCss.productCart}>
                 <button onClick={addToWishlistHandler}>
                   <FaHeart />

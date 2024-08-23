@@ -1,0 +1,178 @@
+/* src/pages/RegisterPage.module.css */
+
+.register {
+  display: flex;
+  height: calc(100vh - 140px);
+  width: 100%;
+  overflow: hidden;
+}
+
+.left {
+  flex: 2;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.formWrapper {
+  width: 550px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.367);
+  border-radius: 20px;
+}
+
+.right {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+  }
+}
+
+.right img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rightText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  z-index: 1;
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  p {
+    font-size: 1.5rem;
+  }
+
+  span {
+    color: var(--orange);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.inputField {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.inputField:focus {
+  border-color: var(--dark-red);
+}
+
+.placeholder {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  color: #999;
+  pointer-events: none;
+}
+
+.shrink {
+  top: 0;
+  left: 10px;
+  background-color: white;
+  padding-inline: 5px;
+  font-size: 12px;
+  color: var(--dark-red);
+}
+
+.submitButton {
+  padding: 10px;
+  background-color: var(--dark-red);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:disabled {
+  background-color: #ccc;
+}
+
+.gearIcon {
+  margin-top: 20px;
+  font-size: 30px;
+  color: var(--dark-red);
+  transition: transform 0.3s ease;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+}
+
+.slideRotate {
+  animation: slideRotate 2s infinite linear;
+}
+
+.button {
+  display: flex;
+  justify-content: end;
+}
+
+@keyframes slideRotate {
+  0% {
+    transform: translateX(0%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(0%) rotate(0deg);
+  }
+}
+
+.registerLink {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.mechanicDetails {
+  margin-top: 20px;
+}
+
+.mechanicDetails .inputContainer {
+  margin-bottom: 20px;
+}

@@ -1,0 +1,64 @@
+.menu{
+    position: sticky;
+    top: 10px;
+}
+
+.userInfo {
+  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
+
+  .image {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+  }
+
+  .name {
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .rolePlayed {
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.navLink {
+  text-decoration: none !important;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 20px;
+    padding-block: 10px;
+    background-color: white;
+    width: 100%;
+    height: 75px;
+
+    div{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .username{
+        color: black !important;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        font-size: 24px;
+        font-family: 700;
+    }
+}

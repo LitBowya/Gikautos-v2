@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Row, Col, Form, Container } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Row, Col, Form, Container, Button } from "react-bootstrap";
 import {
   useGetAllProductsQuery,
   useGetBrandsQuery,
@@ -8,6 +9,7 @@ import {
 import Product from "../components/Product/Product";
 import Loader from "../components/Loader/Loader";
 import Message from "../components/Message/Message";
+import ShopPageCss from "./ShopPage.module.css";
 
 const ShopPage = () => {
   const [filters, setFilters] = useState({
@@ -17,6 +19,7 @@ const ShopPage = () => {
     maxPrice: "",
     sort: "",
   });
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const {
     data: products,
@@ -52,14 +55,61 @@ const ShopPage = () => {
     }
   };
 
+  const images = [
+    {
+      src: "/images/ShopPage/oil.jpg",
+      title: "Engine Care Solutions",
+      subtitle: "Enhance Performance & Extend Life",
+    },
+    {
+      src: "/images/ShopPage/belts.jpg",
+      title: "Drive System Components",
+      subtitle: "Ensure Seamless Functionality & Durability",
+    },
+    {
+      src: "/images/ShopPage/filters.jpg",
+      title: "Advanced Filtration Systems",
+      subtitle: "Maintain Cleanliness & Efficiency",
+    },
+    {
+      src: "/images/ShopPage/battery.jpg",
+      title: "Reliable Power Sources",
+      subtitle: "Dependable Starts & Sustained Energy",
+    },
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const intervalTimes = [3000, 5000, 4000, 4000]; // Durations for each slide
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+    }, intervalTimes[currentSlide]);
+    return () => clearInterval(interval);
+  }, [currentSlide]);
+
+  const handleNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   return (
-    <Container>
+    <Container className="my-4">
       <div>
-        <h2>Shop</h2>
         <Row>
-          <Col md={3}>
+          <Col
+            md={3}
+            className={`d-md-block ${isFilterVisible ? "" : "d-none"}`}
+          >
             {/* Filters */}
-            <Form>
+            <Form className={ShopPageCss.filterSidebar}>
               {/* Category filter */}
               <Form.Group controlId="category">
                 <Form.Label>Category</Form.Label>
@@ -182,14 +232,67 @@ const ShopPage = () => {
               </Form.Group>
             </Form>
           </Col>
+
           <Col md={9}>
+            {/* Carousel */}
+            <div className={ShopPageCss.carousel}>
+              {images.map((image, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: index === currentSlide ? 1 : 0 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className={ShopPageCss.carouselImage}
+                  style={{ backgroundImage: `url(${image.src})` }}
+                >
+                  <div className={ShopPageCss.carouselText}>
+                    <h3>{image.title}</h3>
+                    <p>{image.subtitle}</p>
+                  </div>
+                </motion.div>
+              ))}
+              <Button
+                className={`${ShopPageCss.carouselButton} ${ShopPageCss.prevButton}`}
+                onClick={handlePrev}
+              >
+                &#9664;
+              </Button>
+              <Button
+                className={`${ShopPageCss.carouselButton} ${ShopPageCss.nextButton}`}
+                onClick={handleNext}
+              >
+                &#9654;
+              </Button>
+              <div className={ShopPageCss.carouselDots}>
+                {images.map((_, index) => (
+                  <span
+                    key={index}
+                    className={`${ShopPageCss.dot} ${
+                      index === currentSlide ? "active" : ""
+                    }`}
+                    onClick={() => goToSlide(index)}
+                  ></span>
+                ))}
+              </div>
+            </div>
             {/* Products */}
             {productsLoading ? (
               <Loader />
             ) : productsError ? (
               <Message variant="danger">{productsError.message}</Message>
             ) : products && products.length > 0 ? (
-              <Row>
+              <Row className={ShopPageCss.productsRow}>
+                <div className={ShopPageCss.productsHeader}>
+                  <div className={ShopPageCss.headerButton}>
+                    <Button
+                      className={`d-md-none mb-3 ${ShopPageCss.toggleFiltersButton}`}
+                      onClick={() => setIsFilterVisible(!isFilterVisible)}
+                    >
+                      {isFilterVisible ? "Hide Filters" : "Show Filters"}
+                    </Button>
+                  </div>
+                  <h2>Shop</h2>
+                </div>
                 {products.map((product) => (
                   <Col key={product._id} xs={6} md={4} xl={3} className="mb-3">
                     <Product product={product} />

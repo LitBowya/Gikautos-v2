@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader/Loader";
-import FormContainer from "../components/Form/FormContainer";
 
 import {
   useRegisterMutation,
@@ -11,6 +10,9 @@ import {
 } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
+
+import RegisterCss from "./RegisterPage.module.css";
+import { FaCog } from "react-icons/fa";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -56,6 +58,9 @@ const RegisterPage = () => {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
+
+  const [isTyping, setIsTyping] = useState(false);
+  const [focusedInput, setFocusedInput] = useState(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -112,450 +117,593 @@ const RegisterPage = () => {
         dispatch(setCredentials({ ...res }));
         navigate(redirect);
       } catch (err) {
-        console.log(err?.data?.message || err.error);
         toast.error(err?.data?.message || err.error);
       }
     }
   };
 
+  const handleInputFocus = (input) => {
+    setFocusedInput(input);
+    setIsTyping(true);
+  };
+
+  const handleInputBlur = (e, input) => {
+    setFocusedInput(e.target.value !== "" ? input : null);
+    setIsTyping(e.target.value !== "");
+  };
+
   return (
-    <FormContainer>
-      <h1>Register</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="my-2" controlId="name">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="email">
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            required
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            required
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="my-2" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            required
-            type="password"
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="profilePic">
-          <Form.Label>Profile Pic</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Upload an image for profile picture"
-            value={profilePicture}
-            onChange={(e) => setProfilePic(e.target.value)}
-          />
-          <Form.Control
-            required
-            label="Choose File"
-            onChange={uploadProfileFileHandler}
-            type="file"
-          />
-          {loadingUpload && <Loader />}
-        </Form.Group>
-
-        <Form.Group controlId="isMechanic" className="mb-3">
-          <Form.Check
-            type="checkbox"
-            label="Are you a mechanic?"
-            checked={isMechanic}
-            onChange={(e) => setIsMechanic(e.target.checked)}
-          />
-        </Form.Group>
-
-        {isMechanic && (
-          <div>
-            <Form.Group className="mb-3" controlId="mechanicProfilePic">
-              <Form.Label>Your Picture</Form.Label>
-              <Form.Control
+    <div className={RegisterCss.register}>
+      <div className={RegisterCss.left}>
+        <div className={RegisterCss.formWrapper}>
+          <h1 className={`text-center`}>Register</h1>
+          <Form onSubmit={submitHandler} className={RegisterCss.form}>
+            <div className={RegisterCss.inputContainer}>
+              <input
+                id="name"
                 required
                 type="text"
-                placeholder="Upload an image for your picture"
-                value={mechanicDetails.mechanicProfilePicture}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    mechanicProfilePicture: e.target.value,
-                  })
-                }
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onFocus={() => handleInputFocus("name")}
+                onBlur={(e) => handleInputBlur(e, "name")}
+                className={RegisterCss.inputField}
               />
+              <span
+                className={`${RegisterCss.placeholder} ${
+                  focusedInput === "name" || name ? RegisterCss.shrink : ""
+                }`}
+              >
+                Enter name
+              </span>
+            </div>
+
+            <div className={RegisterCss.inputContainer}>
+              <input
+                id="username"
+                required
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onFocus={() => handleInputFocus("username")}
+                onBlur={(e) => handleInputBlur(e, "username")}
+                className={RegisterCss.inputField}
+              />
+              <span
+                className={`${RegisterCss.placeholder} ${
+                  focusedInput === "username" || username
+                    ? RegisterCss.shrink
+                    : ""
+                }`}
+              >
+                Enter username
+              </span>
+            </div>
+
+            <div className={RegisterCss.inputContainer}>
+              <input
+                id="email"
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => handleInputFocus("email")}
+                onBlur={(e) => handleInputBlur(e, "email")}
+                className={RegisterCss.inputField}
+              />
+              <span
+                className={`${RegisterCss.placeholder} ${
+                  focusedInput === "email" || email ? RegisterCss.shrink : ""
+                }`}
+              >
+                Enter email
+              </span>
+            </div>
+
+            <div className={RegisterCss.inputContainer}>
+              <input
+                id="password"
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => handleInputFocus("password")}
+                onBlur={(e) => handleInputBlur(e, "password")}
+                className={RegisterCss.inputField}
+              />
+              <span
+                className={`${RegisterCss.placeholder} ${
+                  focusedInput === "password" || password
+                    ? RegisterCss.shrink
+                    : ""
+                }`}
+              >
+                Enter password
+              </span>
+            </div>
+
+            <div className={RegisterCss.inputContainer}>
+              <input
+                id="confirmPassword"
+                required
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onFocus={() => handleInputFocus("confirmPassword")}
+                onBlur={(e) => handleInputBlur(e, "confirmPassword")}
+                className={RegisterCss.inputField}
+              />
+              <span
+                className={`${RegisterCss.placeholder} ${
+                  focusedInput === "confirmPassword" || confirmPassword
+                    ? RegisterCss.shrink
+                    : ""
+                }`}
+              >
+                Confirm password
+              </span>
+            </div>
+
+            <Form.Group controlId="profilePic">
+              <Form.Label>Profile Pic</Form.Label>
               <Form.Control
                 required
-                label="Choose File"
-                onChange={uploadMechanicProfileFileHandler}
                 type="file"
+                onChange={uploadProfileFileHandler}
               />
               {loadingUpload && <Loader />}
             </Form.Group>
 
-            <Form.Group className="my-2" controlId="specialty">
-              <Form.Label>Specialty</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter your specialty"
-                value={mechanicDetails.specialty}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    specialty: e.target.value,
-                  })
-                }
+            <Form.Group controlId="isMechanic">
+              <Form.Check
+                type="checkbox"
+                label="Are you a mechanic?"
+                checked={isMechanic}
+                onChange={(e) => setIsMechanic(e.target.checked)}
               />
             </Form.Group>
 
-            <Form.Group className="my-2" controlId="experience">
-              <Form.Label>Experience</Form.Label>
-              <Form.Control
-                required
-                type="number"
-                placeholder="Years Of Experience"
-                value={mechanicDetails.experience}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    experience: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
+            {/* mechanic field  */}
 
-            <Form.Group className="my-2" controlId="contactNumber">
-              <Form.Label>Phone Contact</Form.Label>
-              <Form.Control
-                required
-                type="number"
-                placeholder="Phone Contact"
-                value={mechanicDetails.contactNumber}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    contactNumber: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
+            <div className={RegisterCss.mechanicDetails}>
+              {/* Image Upload */}
+              {isMechanic && (
+                <>
+                  <div className={RegisterCss.inputContainer}>
+                    <label
+                      htmlFor="mechanicProfilePicture"
+                      className={RegisterCss.label}
+                    >
+                      Your Image
+                    </label>
+                    <input
+                      id="mechanicProfilePicture"
+                      type="file"
+                      onChange={uploadMechanicProfileFileHandler}
+                      className={RegisterCss.inputField}
+                    />
+                    {loadingUpload && <Loader />}
+                  </div>
 
-            <Form.Group className="my-2" controlId="shopAddressRegion">
-              <Form.Label>Shop Address Region</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter shop address region"
-                value={mechanicDetails.shopAddress.region}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    shopAddress: {
-                      ...mechanicDetails.shopAddress,
-                      region: e.target.value,
-                    },
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Specialty */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="specialty"
+                      required
+                      type="text"
+                      value={mechanicDetails.specialty}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          specialty: e.target.value,
+                        })
+                      }
+                      onFocus={() => handleInputFocus("specialty")}
+                      onBlur={(e) => handleInputBlur(e, "specialty")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "specialty" ||
+                        mechanicDetails.specialty
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Enter your specialty
+                    </span>
+                  </div>
 
-            <Form.Group className="my-2" controlId="shopAddressCity">
-              <Form.Label>Shop Address City</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter shop address city"
-                value={mechanicDetails.shopAddress.city}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    shopAddress: {
-                      ...mechanicDetails.shopAddress,
-                      city: e.target.value,
-                    },
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Experience */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="experience"
+                      required
+                      type="number"
+                      value={mechanicDetails.experience}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          experience: e.target.value,
+                        })
+                      }
+                      onFocus={() => handleInputFocus("experience")}
+                      onBlur={(e) => handleInputBlur(e, "experience")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "experience" ||
+                        mechanicDetails.experience
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Years of Experience
+                    </span>
+                  </div>
 
-            <Form.Group className="my-2" controlId="shopAddressTown">
-              <Form.Label>Shop Address Town</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter shop address town"
-                value={mechanicDetails.shopAddress.town}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    shopAddress: {
-                      ...mechanicDetails.shopAddress,
-                      town: e.target.value,
-                    },
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Phone Contact */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="contactNumber"
+                      required
+                      type="number"
+                      value={mechanicDetails.contactNumber}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          contactNumber: e.target.value,
+                        })
+                      }
+                      onFocus={() => handleInputFocus("contactNumber")}
+                      onBlur={(e) => handleInputBlur(e, "contactNumber")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "contactNumber" ||
+                        mechanicDetails.contactNumber
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Enter Your Phone Number
+                    </span>
+                  </div>
 
-            <Form.Group className="my-2" controlId="shopAddressLocation">
-              <Form.Label>Shop Address Location</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter shop address location"
-                value={mechanicDetails.shopAddress.location}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    shopAddress: {
-                      ...mechanicDetails.shopAddress,
-                      location: e.target.value,
-                    },
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Shop Address Region */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="shopAddressRegion"
+                      required
+                      type="text"
+                      value={mechanicDetails.shopAddress.region}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          shopAddress: {
+                            ...mechanicDetails.shopAddress,
+                            region: e.target.value,
+                          },
+                        })
+                      }
+                      onFocus={() => handleInputFocus("shopAddressRegion")}
+                      onBlur={(e) => handleInputBlur(e, "shopAddressRegion")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "shopAddressRegion" ||
+                        mechanicDetails.shopAddressRegion
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Which Region Is The Shop Located
+                    </span>
+                  </div>
 
-            <Form.Group className="my-2" controlId="shopName">
-              <Form.Label>Shop Name</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Name of your shop"
-                value={mechanicDetails.shopName}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    shopName: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Shop Address City */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="shopAddressCity"
+                      required
+                      type="text"
+                      value={mechanicDetails.shopAddress.city}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          shopAddress: {
+                            ...mechanicDetails.shopAddress,
+                            city: e.target.value,
+                          },
+                        })
+                      }
+                      onFocus={() => handleInputFocus("shopAddressCity")}
+                      onBlur={(e) => handleInputBlur(e, "shopAddressCity")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "shopAddressCity" ||
+                        mechanicDetails.shopAddressCity
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Which City Is The Shop Located
+                    </span>
+                  </div>
 
-            <Form.Group className="my-2" controlId="workingHours">
-              <Form.Label>Working Hours</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Working Hours"
-                value={mechanicDetails.workingHours}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    workingHours: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Shop Address Town */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="shopAddressTown"
+                      required
+                      type="text"
+                      value={mechanicDetails.shopAddress.town}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          shopAddress: {
+                            ...mechanicDetails.shopAddress,
+                            town: e.target.value,
+                          },
+                        })
+                      }
+                      onFocus={() => handleInputFocus("shopAddressTown")}
+                      onBlur={(e) => handleInputBlur(e, "shopAddressTown")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "shopAddressTown" ||
+                        mechanicDetails.shopAddressTown
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Which Town Is The Shop Located
+                    </span>
+                  </div>
 
-            <Form.Group controlId="servicesProvided" className="my-2">
-              <Form.Label>Services Provided</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="Enter services provided (comma separated)"
-                value={mechanicDetails.servicesProvided.join(", ")}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    servicesProvided: e.target.value
-                      .split(",")
-                      .map((service) => service.trim()),
-                  })
-                }
-              />
-            </Form.Group>
+                  {/* Shop Address Location */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="shopAddressLocation"
+                      required
+                      type="text"
+                      value={mechanicDetails.shopAddress.location}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          shopAddress: {
+                            ...mechanicDetails.shopAddress,
+                            location: e.target.value,
+                          },
+                        })
+                      }
+                      onFocus={() => handleInputFocus("shopAddressLocation")}
+                      onBlur={(e) => handleInputBlur(e, "shopAddressLocation")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "shopAddressLocation" ||
+                        mechanicDetails.shopAddressLocation
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Which Location Is The Shop Located
+                    </span>
+                  </div>
 
-            <Form.Group controlId="availableDays" className="my-2">
-              <Form.Label>Available Days</Form.Label>
-              <Row>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Monday"
-                    checked={mechanicDetails.availableDays.monday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          monday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Tuesday"
-                    checked={mechanicDetails.availableDays.tuesday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          tuesday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Wednesday"
-                    checked={mechanicDetails.availableDays.wednesday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          wednesday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Thursday"
-                    checked={mechanicDetails.availableDays.thursday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          thursday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Friday"
-                    checked={mechanicDetails.availableDays.friday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          friday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Saturday"
-                    checked={mechanicDetails.availableDays.saturday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          saturday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-                <Col>
-                  <Form.Check
-                    type="checkbox"
-                    label="Sunday"
-                    checked={mechanicDetails.availableDays.sunday}
-                    onChange={(e) =>
-                      setMechanicDetails({
-                        ...mechanicDetails,
-                        availableDays: {
-                          ...mechanicDetails.availableDays,
-                          sunday: e.target.checked,
-                        },
-                      })
-                    }
-                  />
-                </Col>
-              </Row>
-            </Form.Group>
+                  {/* Shop Name */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="shopName"
+                      required
+                      type="text"
+                      value={mechanicDetails.shopName}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          shopName: e.target.value,
+                        })
+                      }
+                      onFocus={() => handleInputFocus("shopName")}
+                      onBlur={(e) => handleInputBlur(e, "shopName")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "shopName" || mechanicDetails.shopName
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      What Is The Name Of Your Shop
+                    </span>
+                  </div>
 
-            <Form.Group controlId="additionalInfo" className="my-2">
-              <Form.Label>Additional Info, Optional</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder="Write something about yourself"
-                value={mechanicDetails.additionalInfo}
-                onChange={(e) =>
-                  setMechanicDetails({
-                    ...mechanicDetails,
-                    additionalInfo: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-          </div>
-        )}
+                  {/* Working Hours */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="workingHours"
+                      required
+                      type="text"
+                      value={mechanicDetails.workingHours}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          workingHours: e.target.value,
+                        })
+                      }
+                      onFocus={() => handleInputFocus("workingHours")}
+                      onBlur={(e) => handleInputBlur(e, "workingHours")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "workingHours" ||
+                        mechanicDetails.workingHours
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Enter Your Working Hours
+                    </span>
+                  </div>
 
-        <Button disabled={isLoading} type="submit" variant="primary">
-          Register
-        </Button>
+                  {/* Services Provided */}
+                  <div className={RegisterCss.inputContainer}>
+                    <input
+                      id="servicesProvided"
+                      required
+                      type="text"
+                      value={mechanicDetails.servicesProvided.join(", ")}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          servicesProvided: e.target.value
+                            .split(",")
+                            .map((service) => service.trim()),
+                        })
+                      }
+                      onFocus={() => handleInputFocus("servicesProvided")}
+                      onBlur={(e) => handleInputBlur(e, "servicesProvided")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "servicesProvided" ||
+                        mechanicDetails.servicesProvided
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      Enter Services Provided (comma separated)
+                    </span>
+                  </div>
 
-        {isLoading && <Loader />}
-      </Form>
+                  {/* Available Days */}
+                  <div className={RegisterCss.inputContainer}>
+                    <label className={RegisterCss.label}>Available Days</label>
+                    {[
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                      "Sunday",
+                    ].map((day) => (
+                      <div key={day} className={RegisterCss.checkboxContainer}>
+                        <input
+                          type="checkbox"
+                          id={day}
+                          checked={
+                            mechanicDetails.availableDays[day.toLowerCase()]
+                          }
+                          onChange={(e) =>
+                            setMechanicDetails({
+                              ...mechanicDetails,
+                              availableDays: {
+                                ...mechanicDetails.availableDays,
+                                [day.toLowerCase()]: e.target.checked,
+                              },
+                            })
+                          }
+                          className={RegisterCss.checkbox}
+                        />
+                        <label
+                          htmlFor={day}
+                          className={RegisterCss.checkboxLabel}
+                        >
+                          {day}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
 
-      <Row className="py-3">
-        <Col>
-          Already have an account?{" "}
-          <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
-            Login
-          </Link>
-        </Col>
-      </Row>
-    </FormContainer>
+                  {/* Additional Info */}
+                  <div className={RegisterCss.inputContainer}>
+                    <textarea
+                      id="additionalInfo"
+                      value={mechanicDetails.additionalInfo}
+                      onChange={(e) =>
+                        setMechanicDetails({
+                          ...mechanicDetails,
+                          additionalInfo: e.target.value,
+                        })
+                      }
+                      onFocus={() => handleInputFocus("additionalInfo")}
+                      onBlur={(e) => handleInputBlur(e, "additionalInfo")}
+                      className={RegisterCss.inputField}
+                    />
+                    <span
+                      className={`${RegisterCss.placeholder} ${
+                        focusedInput === "additionalInfo" ||
+                        mechanicDetails.additionalInfo
+                          ? RegisterCss.shrink
+                          : ""
+                      }`}
+                    >
+                      What Additional Info Can You Give Us
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className={RegisterCss.button}>
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className={RegisterCss.submitButton}
+              >
+                Register
+              </Button>
+            </div>
+
+            {isLoading && <Loader />}
+
+            <div
+              className={`${RegisterCss.gearIcon} ${
+                isTyping ? RegisterCss.slideRotate : ""
+              }`}
+            >
+              <FaCog />
+            </div>
+          </Form>
+        </div>
+
+        <div className={RegisterCss.registerLink}>
+          <p>
+            Already have an account?{" "}
+            <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
+              Login
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div className={RegisterCss.right}>
+        <img src="/images/SignUp/mechanics.jpg" alt="Mechanics" />
+        <div className={RegisterCss.rightText}>
+          <h1>
+            <span>Spark</span> Your Journey
+          </h1>
+          <p>
+            <span>Ignite</span> your account for a world of quality car
+            components.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default RegisterPage;
-

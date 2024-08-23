@@ -12,7 +12,7 @@ import {
 import { Provider } from "react-redux";
 import store from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'semantic-ui-css/semantic.min.css'
+import "semantic-ui-css/semantic.min.css";
 import AppErrorBoundary from "./ErrorBoundary.jsx";
 import "./index.css";
 import App from "./App";
@@ -41,7 +41,8 @@ import ChatPage from "./pages/ChatPage.jsx";
 import SearchBox from "./components/Search/SearchBox.jsx";
 import MechanicHomepage from "./pages/Mechanic/MechanicHomepage.jsx";
 import MechanicDetailPage from "./pages/Mechanic/MechanicDetailPage.jsx";
-
+import AdminLayout from "./pages/Admin/AdminLayout.jsx";
+import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -71,20 +72,19 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path="" element={<AdminRoute />}>
-        <Route path="/admin/orderlist" element={<OrderListPage />} />
-        <Route path="/admin/productlist" element={<ProductListPage />} />
-        <Route path="/admin/userlist" element={<UserListPage />} />
-        <Route path="/admin/product/:id/edit" element={<ProductEditPage />} />
-        <Route
-          path="/admin/productlist/:pageNumber"
-          element={<ProductListPage />}
-        />
-        <Route path="/admin/user/:id/edit" element={<UserEditPage />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="orderlist" element={<OrderListPage />} />
+          <Route path="productlist" element={<ProductListPage />} />
+          <Route path="product/:id/edit" element={<ProductEditPage />} />
+          <Route path="userlist" element={<UserListPage />} />
+          <Route path="user/:id/edit" element={<UserEditPage />} />
+          <Route path="productlist/:pageNumber" element={<ProductListPage />} />
+        </Route>
       </Route>
     </Route>
   )
 );
-
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
