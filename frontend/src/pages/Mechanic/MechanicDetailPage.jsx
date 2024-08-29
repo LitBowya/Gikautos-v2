@@ -4,7 +4,10 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import { useGetMechanicDetailsQuery, useCreateMechanicReviewMutation } from "../../slices/mechanicApiSlice";
+import {
+  useGetMechanicByIdQuery,
+  useCreateMechanicReviewMutation,
+} from "../../slices/mechanicApiSlice";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
 import Rating from "../../components/Rating/Rating";
@@ -18,11 +21,11 @@ const MechanicDetailPage = () => {
   const [comment, setComment] = useState("");
 
   const {
-    data: mechanicDetails,
+    data: mechanic,
     isLoading,
     refetch,
     error,
-  } = useGetMechanicDetailsQuery(mechanicId);
+  } = useGetMechanicByIdQuery(mechanicId);
 
   const [createMechanicReview, { isLoading: loadingProductReview }] = useCreateMechanicReviewMutation();
 
@@ -46,16 +49,18 @@ const MechanicDetailPage = () => {
     return <Loader />;
   }
 
-  if (error || !mechanicDetails) {
+  if (error || !mechanic) {
     return (
       <Container>
-        <Message variant="danger">{error?.data?.message || "Failed to fetch mechanic details"}</Message>
+        <Message variant="danger">
+          {error?.data?.message || "Failed to fetch mechanic details"}
+        </Message>
       </Container>
     );
   }
 
   // Ensure mechanicDetails.availableDays is defined before accessing
-  const availableDays = mechanicDetails.mechanicDetails.availableDays || {};
+  const availableDays = mechanic.mechanic.mechanicDetails.availableDays || {};
 
   return (
     <Container>
@@ -66,33 +71,58 @@ const MechanicDetailPage = () => {
         <Row className="g-0">
           <Col md={5}>
             <Image
-              src={mechanicDetails.mechanicDetails.mechanicProfilePicture}
-              alt={mechanicDetails.name}
+              src={mechanic.mechanic.mechanicDetails.mechanicProfilePicture}
+              alt={mechanic.mechanic.name}
               className="img-fluid rounded-start"
             />
           </Col>
           <Col md={7}>
             <Card.Body>
-              <Card.Title>{mechanicDetails.name}</Card.Title>
+              <Card.Title>{mechanic.mechanic.name}</Card.Title>
               <Card.Text as="div">
-                <Rating value={mechanicDetails.rating} text={`${mechanicDetails.numReviews} reviews`} />
+                <Rating
+                  value={mechanic.mechanic.rating}
+                  text={`${mechanic.mechanic.numReviews} reviews`}
+                />
               </Card.Text>
               <ListGroup variant="flush" className="my-3">
-                <ListGroup.Item><strong>Specialty:</strong> {mechanicDetails.mechanicDetails.specialty}</ListGroup.Item>
-                <ListGroup.Item><strong>Experience:</strong> {mechanicDetails.mechanicDetails.experience} years</ListGroup.Item>
-                <ListGroup.Item><strong>Working Hours:</strong> {mechanicDetails.mechanicDetails.workingHours}</ListGroup.Item>
-                <ListGroup.Item><strong>Contact Number:</strong> 0{mechanicDetails.mechanicDetails.contactNumber}</ListGroup.Item>
                 <ListGroup.Item>
-                  <strong>Services Provided:</strong> {mechanicDetails.mechanicDetails.servicesProvided ? mechanicDetails.mechanicDetails.servicesProvided.join(", ") : "Not specified"}
+                  <strong>Specialty:</strong>{" "}
+                  {mechanic.mechanic.mechanicDetails.specialty}
                 </ListGroup.Item>
-                <ListGroup.Item><strong>Additional Info:</strong> {mechanicDetails.mechanicDetails.additionalInfo}</ListGroup.Item>
+                <ListGroup.Item>
+                  <strong>Experience:</strong>{" "}
+                  {mechanic.mechanic.mechanicDetails.experience} years
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <strong>Working Hours:</strong>{" "}
+                  {mechanic.mechanic.mechanicDetails.workingHours}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <strong>Contact Number:</strong> 0
+                  {mechanic.mechanic.mechanicDetails.contactNumber}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <strong>Services Provided:</strong>{" "}
+                  {mechanic.mechanic.mechanicDetails.servicesProvided
+                    ? mechanic.mechanic.mechanicDetails.servicesProvided.join(", ")
+                    : "Not specified"}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <strong>Additional Info:</strong>{" "}
+                  {mechanic.mechanic.mechanicDetails.additionalInfo}
+                </ListGroup.Item>
                 <ListGroup.Item>
                   <strong>Shop Address:</strong>
                   <ul>
-                    <li>Region: {mechanicDetails.mechanicDetails.shopAddress?.region}</li>
-                    <li>City: {mechanicDetails.mechanicDetails.shopAddress?.city}</li>
-                    <li>Town: {mechanicDetails.mechanicDetails.shopAddress?.town}</li>
-                    <li>Location: {mechanicDetails.mechanicDetails.shopAddress?.location}</li>
+                    <li>
+                      Region: {mechanic.mechanic.mechanicDetails.shopAddress?.region}
+                    </li>
+                    <li>City: {mechanic.mechanic.mechanicDetails.shopAddress?.city}</li>
+                    <li>Town: {mechanic.mechanic.mechanicDetails.shopAddress?.town}</li>
+                    <li>
+                      Location: {mechanic.mechanic.mechanicDetails.shopAddress?.location}
+                    </li>
                   </ul>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -100,7 +130,12 @@ const MechanicDetailPage = () => {
                   <ul className="list-inline">
                     {Object.keys(availableDays).map((day) => (
                       <li key={day} className="list-inline-item me-3">
-                        {day.charAt(0).toUpperCase() + day.slice(1)}: {availableDays[day] ? <FaCheck style={{ color: 'green' }} /> : <FaTimes style={{ color: 'red' }} />}
+                        {day.charAt(0).toUpperCase() + day.slice(1)}:{" "}
+                        {availableDays[day] ? (
+                          <FaCheck style={{ color: "green" }} />
+                        ) : (
+                          <FaTimes style={{ color: "red" }} />
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -113,9 +148,9 @@ const MechanicDetailPage = () => {
       <Row className="my-3">
         <Col md={6}>
           <h2>Reviews</h2>
-          {mechanicDetails.reviews.length === 0 && <Message>No Reviews</Message>}
+          {mechanic.mechanic.reviews.length === 0 && <Message>No Reviews</Message>}
           <ListGroup variant="flush">
-            {mechanicDetails.reviews.map((review) => (
+            {mechanic.mechanic.reviews.map((review) => (
               <ListGroup.Item key={review._id}>
                 <strong>{review.name}</strong>
                 <Rating value={review.rating} />
@@ -129,7 +164,9 @@ const MechanicDetailPage = () => {
           <h2>Write a Customer Review</h2>
           {loadingProductReview && <Loader />}
           {userId === mechanicId ? (
-            <Message variant="warning">You are not allowed to review yourself</Message>
+            <Message variant="warning">
+              You are not allowed to review yourself
+            </Message>
           ) : (
             <Form onSubmit={submitHandler}>
               <Form.Group className="my-2" controlId="rating">

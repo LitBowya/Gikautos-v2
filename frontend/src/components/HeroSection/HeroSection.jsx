@@ -21,7 +21,7 @@ const carouselVariants = {
 
 const HeroSection = () => {
   const slidesData = [
-    ["/images/HeroSection/bg-dark-oil.webp"],
+    ["/images/HeroSection/automotive-lubricants.jpg"],
     ["/images/HeroSection/bty-1.jpg"],
     ["/images/HeroSection/fil-1.jpg"],
     ["/images/HeroSection/belt-1.jpg"],
@@ -112,10 +112,6 @@ const HeroSection = () => {
                   />
                 </motion.div>
               </AnimatePresence>
-              <div className={HeroSectionCss.navigation}>
-                <button onClick={() => changeSlide(index, -1)}> {">"} </button>
-                <button onClick={() => changeSlide(index, 1)}> {"<"} </button>
-              </div>
             </div>
           ))}
         </div>

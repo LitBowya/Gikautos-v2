@@ -1,30 +1,23 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
-const fetchProducts = asyncHandler(async (req, res) => {
-  try {
-    const products = await Product.find({});
-    res.json({ products });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
 
 const getProducts = asyncHandler(async (req, res) => {
-  const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: "i",
-        },
-      }
-    : {};
+    const keyword = req.query.keyword
+        ? {
+            name: {
+                $regex: req.query.keyword,
+                $options: "i",
+            },
+        }
+        : {};
 
-  const products = await Product.find({ ...keyword });
+    // Find products and sort them by createdAt in descending order
+    const products = await Product.find({ ...keyword }).sort({ createdAt: -1 });
 
-  res.json({ products });
+    res.json({ products });
 });
+
 
 const getAllProducts = asyncHandler(async (req, res) => {
   let query = {};
@@ -287,5 +280,4 @@ export {
   getAllProducts,
   getBrands,
   getCategories,
-  fetchProducts,
 };

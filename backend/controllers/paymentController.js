@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import https from "https";
+import Payment from "../models/paymentModel.js";
 
 dotenv.config();
 
@@ -84,6 +85,20 @@ const payStack = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "An error occurred" });
+    }
+  },
+
+  getAllPayments: async (req, res) => {
+    try {
+        const payments = await Payment.find({});
+        if (!payments) {
+          res.status(404).json({ message: "No payments found" });
+        } else {
+          res.status(200).json(payments);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ error: "An error occurred" });
     }
   },
 

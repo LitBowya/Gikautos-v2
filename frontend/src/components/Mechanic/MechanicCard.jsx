@@ -2,12 +2,10 @@ import React from "react";
 import Rating from "../Rating/Rating";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useGetMechanicDetailsQuery } from "../../slices/mechanicApiSlice";
+import { useGetMechanicByIdQuery } from "../../slices/mechanicApiSlice";
 
 const MechanicCard = ({ mechanic }) => {
-  const {
-    data: mechanicDetails,
-  } = useGetMechanicDetailsQuery(mechanic._id);
+  const { data: mechanicDetails } = useGetMechanicByIdQuery(mechanic._id);
 
   return (
     <Card className="my-3 rounded" style={{ height: "300px" }}>
@@ -36,7 +34,7 @@ const MechanicCard = ({ mechanic }) => {
 
           <Card.Text as="div">
             <Rating
-              value={mechanicDetails?.rating}
+              value={mechanic?.rating}
               text={`${mechanic.numReviews} reviews`}
             />
           </Card.Text>

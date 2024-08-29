@@ -2,6 +2,7 @@ import { FaShoppingCart, FaUser, FaSearch, FaHeart } from "react-icons/fa";
 import { FaRocketchat, FaGears } from "react-icons/fa6";
 import { FaPhone } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
+import { RiAdminLine } from "react-icons/ri";
 import { Container, Badge } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -30,11 +31,11 @@ const Header = () => {
         <Container className={HeaderCss.topNavContainer}>
           <span>
             <IoIosMail />
-            Our email
+            gikautos@autos.com
           </span>
           <span>
             <FaPhone />
-            Our contact
+            0242130480
           </span>
         </Container>
       </div>
@@ -100,6 +101,15 @@ const Header = () => {
                   >
                     <FaGears />
                   </Link>
+                  {userInfo && userInfo.isAdmin && (
+                    <Link
+                      to="/admin/dashboard"
+                      className={HeaderCss.icon3}
+                      data-tooltip="Admin"
+                    >
+                      <RiAdminLine />
+                    </Link>
+                  )}
                 </div>
               </>
             ) : (

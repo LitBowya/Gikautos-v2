@@ -28,12 +28,8 @@ const AdminDashboard = () => {
     (user) => format(new Date(user.createdAt), "yyyy-MM-dd") === today
   ).length;
 
-console.log("products", productsData);
-
 const totalProducts =
   productsData && productsData.products ? productsData.products.length : 0;
-
-console.log("Total Products:", totalProducts);
 
   const totalOrders = ordersData?.length || 0;
   const newOrdersToday = ordersData?.filter(
