@@ -48,8 +48,15 @@ const getMechanicById = asyncHandler(async (req, res) => {
 
 const createMechanicReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
-
+    console.log("User Info:", req.user)
     const mechanic = await User.findById(req.params.id);
+
+    if (!req.user) {
+        res.status(401);
+        throw new Error("User not authenticated");
+    }
+
+
 
     if (mechanic) {
         const alreadyReviewed = mechanic.reviews.find(

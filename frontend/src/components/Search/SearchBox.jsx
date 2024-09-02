@@ -33,7 +33,7 @@ const SearchBox = () => {
   };
 
   return (
-      <Container>
+      <Container className="my-2">
         <Form onSubmit={submitHandler} className="d-flex">
           <Form.Control
               type="text"
@@ -41,7 +41,7 @@ const SearchBox = () => {
               onChange={(e) => setSearchKeyword(e.target.value)}
               value={searchKeyword}
               placeholder="Search Products..."
-              className="mr-sm-2 ml-sm-5"
+              className="pl-3 py-2"
           ></Form.Control>
         </Form>
 

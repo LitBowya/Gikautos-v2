@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, ListGroup, Image, Button, Card } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
+import { IoHeartDislikeOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import {
   useGetWishlistQuery,
@@ -20,7 +21,6 @@ const WishlistPage = () => {
   useEffect(() => {
     refetch();
   }, [refetch]);
-
 
   const removeItemHandler = async (productId) => {
     if (window.confirm("Are you sure you want to remove this item?")) {
@@ -55,9 +55,9 @@ const WishlistPage = () => {
             {clearWishlistLoading ? (
               <Loader />
             ) : (
-              <Button className="d-block" onClick={clearWishlistHandler}>
-                Clear Wishlist
-              </Button>
+              <button className="d-block bg-danger p-3 my-2 rounded-3 border-0" onClick={clearWishlistHandler}>
+                <FaTrash size={20} color='white' />
+              </button>
             )}
           </div>
           {isError && <Message variant="danger">{error.message}</Message>}
@@ -66,7 +66,10 @@ const WishlistPage = () => {
           ) : (
             <Card className="px-2 py-1">
               {wishlist && wishlist.length === 0 ? (
-                <Message>Your wishlist is empty</Message>
+                <div className="d-flex flex-column justify-content-center align-items-center fs-4 fw-bold text-muted">
+                  <IoHeartDislikeOutline size={50}/>
+                  <p>You have no WISHLIST</p>
+                </div>
               ) : (
                 <ListGroup variant="flush">
                   {wishlist.map((item) => (
@@ -85,7 +88,7 @@ const WishlistPage = () => {
                             {item.product.name}
                           </Link>
                         </Col>
-                        <Col md={2}>${item.product.price}</Col>
+                        <Col md={2}>GHS {item.product.price}</Col>
                         <Col md={2}>
                           <Button
                             type="button"

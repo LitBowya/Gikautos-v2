@@ -4,6 +4,7 @@ import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useGetMechanicByIdQuery } from "../../slices/mechanicApiSlice";
 
+
 const MechanicCard = ({ mechanic }) => {
   const { data: mechanicDetails } = useGetMechanicByIdQuery(mechanic._id);
 
@@ -16,6 +17,7 @@ const MechanicCard = ({ mechanic }) => {
             variant="top"
             className="p-1"
             style={{ height: "180px" }}
+            alt={mechanic.name}
           />
         </Link>
 
@@ -28,7 +30,7 @@ const MechanicCard = ({ mechanic }) => {
             }}
           >
             <Card.Title as="div" className="product-title">
-              <span>{mechanic.name}</span>
+              <p>{mechanic.name}</p>
             </Card.Title>
           </Link>
 

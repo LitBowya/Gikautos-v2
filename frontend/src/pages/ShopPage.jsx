@@ -112,7 +112,7 @@ const ShopPage = () => {
             <Form className={ShopPageCss.filterSidebar}>
               {/* Category filter */}
               <Form.Group controlId="category">
-                <Form.Label>Category</Form.Label>
+                <Form.Label className={ShopPageCss.label}>Category</Form.Label>
                 {categoriesLoading ? (
                   <Loader />
                 ) : categoriesError ? (
@@ -136,7 +136,7 @@ const ShopPage = () => {
               </Form.Group>
               {/* Brand filter */}
               <Form.Group controlId="brand">
-                <Form.Label>Brand</Form.Label>
+                <Form.Label className={ShopPageCss.label}>Brand</Form.Label>
                 {brandsLoading ? (
                   <Loader />
                 ) : brandsError ? (
@@ -160,7 +160,7 @@ const ShopPage = () => {
               </Form.Group>
               {/* Price range filter */}
               <Form.Group controlId="minPrice">
-                <Form.Label>Min Price</Form.Label>
+                <Form.Label className={ShopPageCss.label}>Min Price</Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Enter min price"
@@ -170,7 +170,7 @@ const ShopPage = () => {
                 />
               </Form.Group>
               <Form.Group controlId="maxPrice">
-                <Form.Label>Max Price</Form.Label>
+                <Form.Label className={ShopPageCss.label}>Max Price</Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Enter max price"
@@ -181,7 +181,7 @@ const ShopPage = () => {
               </Form.Group>
               {/* Sort by filter */}
               <Form.Group controlId="sort">
-                <Form.Label>Sort By</Form.Label>
+                <Form.Label className={ShopPageCss.label}>Sort By</Form.Label>
                 <div>
                   <Form.Check
                     type="radio"

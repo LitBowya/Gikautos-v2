@@ -45,14 +45,15 @@ const Product = ({ product }) => {
           <img
             src={product.image}
             alt={product.name}
-            className={ProductCss.productImg}
+                      className={ProductCss.productImg}
+
           />
           <div className={ProductCss.productInfo}>
             <div style={{ color: "gray" }}>
               <h3 className={ProductCss.productName}>{product.name}</h3>
             </div>
             <span>Out Of Stock</span>
-            <p>${product.price}</p>
+            <p>GHS {product.price}</p>
           </div>
         </div>
       ) : (

@@ -58,7 +58,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
     sortCriteria = { createdAt: -1 };
   }
 
-  const products = await Product.find(query).sort(sortCriteria);
+    const products = await Product.find(query).sort({ ...sortCriteria, createdAt: -1 });
+
 
   if (products.length > 0) {
     res.status(200).json(products);

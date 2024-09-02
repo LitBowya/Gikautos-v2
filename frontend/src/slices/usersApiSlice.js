@@ -71,7 +71,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
     uploadProfilePicture: builder.mutation({
       query: (data) => ({
-        url: UPLOAD_URL,
+        url: `${UPLOAD_URL}/single`,
         method: "POST",
         body: data,
       }),

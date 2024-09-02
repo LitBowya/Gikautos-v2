@@ -26,13 +26,26 @@
   h3 {
     margin: 0;
     font-size: 2rem;
+    color: var(--orange);
   }
 
   p {
     margin: 0;
     font-size: 1.2rem;
   }
-}
+
+  @media (max-width: 550px) {
+    h3 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+    }
+
 
 .carouselButton {
   position: absolute;
@@ -106,4 +119,9 @@
   border-bottom: 2px solid #dee2e6;
   padding-bottom: 10px;
   padding-inline: 15px;
+}
+
+.filterLabel{
+    font-size: 1.125rem;
+    font-weight: 600;
 }

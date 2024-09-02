@@ -5,6 +5,7 @@ import Loader from "../Loader/Loader";
 import Message from "../Message/Message";
 import ProductCategoryCss from "./ProductCategory.module.css";
 
+
 const ProductByCategory = ({ category }) => {
   const {
     data: products,

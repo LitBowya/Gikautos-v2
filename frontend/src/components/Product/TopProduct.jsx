@@ -5,6 +5,7 @@ import Message from "../Message/Message";
 import { useGetTopProductsQuery } from "../../slices/productsApiSlice";
 import TopProductCss from "./TopProduct.module.css";
 
+
 const TopProduct = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
 

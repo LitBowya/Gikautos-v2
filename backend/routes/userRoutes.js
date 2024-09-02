@@ -11,10 +11,11 @@ import {
   updateUser,
 } from "../controllers/userController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
+import { uploadSingleImage } from "./uploadRoutes.js";
 const router = express.Router();
 
 router.route("/").get( getUsers);
-router.post("/register", registerUser);
+router.post("/register", uploadSingleImage, registerUser);
 router.post("/logout", logoutUser);
 router.post("/login", loginUser);
 router

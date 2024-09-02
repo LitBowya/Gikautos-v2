@@ -73,6 +73,7 @@
     border-radius: 0 15px 15px 0;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    position: relative;
 
     &::-webkit-scrollbar {
       display: none;
@@ -81,6 +82,8 @@
     h2 {
       text-align: end;
       font-size: 1.5rem;
+      position: sticky;
+      top: 0;
 
       span {
         position: relative;
@@ -124,4 +127,8 @@
       grid-area: 1 / 1 / 2 / 2;
     }
   }
+}
+
+span{
+    color: var(--orange);
 }

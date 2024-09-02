@@ -14,6 +14,7 @@ import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
 import Rating from "../components/Rating/Rating";
 import Loader from "../components/Loader/Loader";
 import Message from "../components/Message/Message";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import ProductPageCss from "./ProductPage.module.css";
 
 const ProductPage = () => {
@@ -140,10 +141,11 @@ const ProductPage = () => {
           <>
             <Row>
               <Col lg={5}>
-                <img
+                <LazyLoadImage
                   src={productSelected.image}
                   alt={productSelected.name}
                   className={ProductPageCss.productImage}
+                  placeholderSrc="https://placehold.co/600x400"
                 />
               </Col>
               <Col lg={7}>

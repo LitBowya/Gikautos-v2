@@ -63,21 +63,11 @@ const ProductListScreen = () => {
 
   useEffect(() => {
     if (data) {
-      console.log("Original Products:", data.products);
       const sortedProducts = data.products
         .filter((product) =>
           product.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
-        .sort((a, b) => {
-          console.log(
-            "Comparing:",
-            new Date(a.updatedAt),
-            new Date(b.updatedAt)
-          );
-          return new Date(a.updatedAt) - new Date(b.updatedAt);
-        });
 
-      console.log("Sorted Products:", sortedProducts);
       setFilteredProducts(sortedProducts);
     } else {
       setFilteredProducts([]);

@@ -53,20 +53,9 @@ const RegisterPage = () => {
 
   const [register, { isLoading }] = useRegisterMutation();
 
-  const { userInfo } = useSelector((state) => state.auth);
-
-  const { search } = useLocation();
-  const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/";
 
   const [isTyping, setIsTyping] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
-
-  useEffect(() => {
-    if (userInfo) {
-      navigate(redirect);
-    }
-  }, [navigate, redirect, userInfo]);
 
   const [uploadProfilePicture, { isLoading: loadingUpload }] =
     useUploadProfilePictureMutation();
@@ -75,7 +64,7 @@ const RegisterPage = () => {
     const formData = new FormData();
     formData.append("image", e.target.files[0]);
     try {
-      const res = await uploadProfilePicture(formData).unwrap();
+        const res = await uploadProfilePicture(formData).unwrap();
       toast.success(res.message);
       setProfilePic(res.image);
     } catch (err) {
@@ -115,7 +104,7 @@ const RegisterPage = () => {
           mechanicDetails: isMechanic ? mechanicDetails : null,
         }).unwrap();
         dispatch(setCredentials({ ...res }));
-        navigate(redirect);
+        navigate("/login");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -683,7 +672,7 @@ const RegisterPage = () => {
         <div className={RegisterCss.registerLink}>
           <p>
             Already have an account?{" "}
-            <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
+            <Link to="/login">
               Login
             </Link>
           </p>

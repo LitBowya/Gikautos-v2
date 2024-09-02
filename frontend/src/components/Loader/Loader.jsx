@@ -1,26 +1,11 @@
-import { Spinner } from "react-bootstrap"
+import { PropagateLoader } from "react-spinners";
 
 const Loader = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Spinner
-        animation="border"
-        role="status"
-        style={{
-          width: "50px",
-          height: "50px",
-          color: "red",
-        }}
-      />
+    <div className="d-flex justify-content-center">
+      <PropagateLoader color="rgb(146, 9, 9)" size={7} speedMultiplier={1} />
     </div>
   );
+};
 
-}
-
-export default Loader
+export default Loader;

@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "../Logo/Logo";
 import HeroSectionCss from "../HeroSection/HeroSection.module.css";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const carouselVariants = {
   enter: (direction) => ({
@@ -106,9 +107,10 @@ const HeroSection = () => {
                   }}
                   className={HeroSectionCss.slide}
                 >
-                  <img
+                  <LazyLoadImage
                     src={slides[currentSlides[index]]}
                     alt={`Slide ${index + 1}`}
+                    placeholderSrc="https://placehold.co/400x400"
                   />
                 </motion.div>
               </AnimatePresence>

@@ -12,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 import Message from "../components/Message/Message";
 import Loader from "../components/Loader/Loader";
+import PageLoader from "../components/Loader/PageLoader";
 import PayStack from "../components/PayStack/PayStack";
 import VerifyPayment from "../components/PayStack/VerifyPayment";
 import {
@@ -63,7 +64,7 @@ const OrderPage = () => {
   };
 
   return isLoading ? (
-    <Loader />
+    <PageLoader />
   ) : error ? (
     <Message variant="danger">{error}</Message>
   ) : (
@@ -143,7 +144,7 @@ const OrderPage = () => {
                 <Message variant="danger">Not Paid</Message>
               )}
               {userInfo &&
-                userInfo.isAdmin &&
+                userInfo.isAdmin && !order.isPaid &&
                 order.paymentMethod === "On Delivery" && (
                   <Button
                     type="button"
@@ -250,7 +251,7 @@ const OrderPage = () => {
                   </div>
                 ) : (
                   <>
-                    {userInfo.isAdmin ? null : (
+                    {userInfo ? null : (
                       <div>
                         <Message variant="success">
                           Thank You For Shopping With GIKautos

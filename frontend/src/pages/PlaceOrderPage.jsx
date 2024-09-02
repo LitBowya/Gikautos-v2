@@ -19,6 +19,7 @@ import {
   useGetCartItemsQuery,
   useClearCartItemsMutation,
 } from "../slices/cartApiSlice";
+import PlaceOrderCss from './PlaceOrder.module.css'
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
@@ -228,7 +229,7 @@ const PlaceOrderPage = () => {
                 {cart.paymentMethod === "On Delivery" ? (
                   <Button
                     type="button"
-                    className="btn-block w-100"
+                    className={PlaceOrderCss.button}
                     disabled={cartItems && cartItems === 0}
                     onClick={placeOrderHandler}
                   >
@@ -237,7 +238,7 @@ const PlaceOrderPage = () => {
                 ) : (
                   <Button
                     type="button"
-                    className="btn-block w-100"
+                    className={PlaceOrderCss.button}
                     disabled={cartItems && cartItems === 0}
                     onClick={orderNow}
                   >

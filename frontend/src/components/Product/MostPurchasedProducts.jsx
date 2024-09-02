@@ -5,6 +5,7 @@ import Message from "../Message/Message";
 import { useGetMostPurchasedProductsQuery } from "../../slices/productsApiSlice";
 import TopProductCss from "./TopProduct.module.css";
 
+
 const TopProduct = () => {
   const {
     data: products,

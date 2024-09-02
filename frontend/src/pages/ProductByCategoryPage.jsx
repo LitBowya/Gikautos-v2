@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Row, Col, Form, Container, Button } from "react-bootstrap";
+import { Row, Col, Form, Container } from "react-bootstrap";
 import { motion } from "framer-motion";
 import {
   useGetProductsByCategoryQuery,
@@ -89,14 +89,6 @@ const ProductByCategoryPage = () => {
     return () => clearInterval(interval);
   }, [currentSlide, images.length]);
 
-  const handleNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % images.length);
-  };
-
-  const handlePrev = () => {
-    setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
-  };
-
   const goToSlide = (index) => {
     setCurrentSlide(index);
   };
@@ -109,7 +101,7 @@ const ProductByCategoryPage = () => {
           <Form className={ProductByCategoryCss.filterSidebar}>
             {/* Brand filter */}
             <Form.Group controlId="brand">
-              <Form.Label>Brands</Form.Label>
+              <Form.Label className={ProductByCategoryCss.filterLabel}>Brands</Form.Label>
               <div>
                 {brands &&
                   brands.map((brand) => (
@@ -128,7 +120,7 @@ const ProductByCategoryPage = () => {
             </Form.Group>
             {/* Price range filters */}
             <Form.Group controlId="minPrice">
-              <Form.Label>Min Price</Form.Label>
+              <Form.Label className={ProductByCategoryCss.filterLabel}>Min Price</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Enter min price"
@@ -138,7 +130,7 @@ const ProductByCategoryPage = () => {
               />
             </Form.Group>
             <Form.Group controlId="maxPrice">
-              <Form.Label>Max Price</Form.Label>
+              <Form.Label className={ProductByCategoryCss.filterLabel}>Max Price</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Enter max price"
@@ -149,7 +141,7 @@ const ProductByCategoryPage = () => {
             </Form.Group>
             {/* Sort by filter */}
             <Form.Group controlId="sort">
-              <Form.Label>Sort By</Form.Label>
+              <Form.Label className={ProductByCategoryCss.filterLabel}>Sort By</Form.Label>
               <div>
                 <Form.Check
                   type="radio"
@@ -218,18 +210,6 @@ const ProductByCategoryPage = () => {
                 </div>
               </motion.div>
             ))}
-            <Button
-              className={`${ProductByCategoryCss.carouselButton} ${ProductByCategoryCss.prevButton}`}
-              onClick={handlePrev}
-            >
-              &#9664;
-            </Button>
-            <Button
-              className={`${ProductByCategoryCss.carouselButton} ${ProductByCategoryCss.nextButton}`}
-              onClick={handleNext}
-            >
-              &#9654;
-            </Button>
             <div className={ProductByCategoryCss.carouselDots}>
               {images.map((_, index) => (
                 <span

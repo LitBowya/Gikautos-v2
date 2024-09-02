@@ -3,15 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { FaTimes } from "react-icons/fa";
-import {
-  Container,
-  Grid,
-  Box,
-  Tabs,
-  Tab,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Container, Grid, Box, Tabs, Tab, Button } from "@mui/material";
 import { LinkContainer } from "react-router-bootstrap";
 import { Accordion, Row, Col } from "react-bootstrap";
 import { useProfileMutation, useLogoutMutation } from "../slices/usersApiSlice";
@@ -27,7 +19,8 @@ const ProfilePage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [tabValue, setTabValue] = useState("profile");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [tabValue, setTabValue] = useState("updateprofile");
   const [expandedOrderId, setExpandedOrderId] = useState(null);
 
   const dispatch = useDispatch();
@@ -54,6 +47,7 @@ const ProfilePage = () => {
     if (userInfo) {
       setName(userInfo.name || "");
       setEmail(userInfo.email || "");
+      setProfilePicture(userInfo.profilePicture || "");
     }
   }, [userInfo, userInfo.name, userInfo.email]);
 
@@ -69,6 +63,7 @@ const ProfilePage = () => {
           name,
           email,
           password,
+          profilePicture,
         }).unwrap();
 
         dispatch(setCredentials(res));
@@ -82,45 +77,37 @@ const ProfilePage = () => {
   };
 
   return (
-    <Container>
-      <Grid container spacing={3}>
-        <Grid
-          item
-          xs={3}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            height: "70vh",
-            gap: "15px",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
+    <Container className={ProfileCss.profilePage}>
+      <Grid container spacing={3} className={ProfileCss.profileGrid}>
+        <Grid item xs={3} className={ProfileCss.profileGridLeft}>
+          <Box sx={{ width: "100%" }} className={ProfileCss.profileLeftBox}>
             <Tabs
               orientation="vertical"
               value={tabValue}
               onChange={(e, newValue) => setTabValue(newValue)}
               aria-label="Profile Tabs"
               variant="scrollable"
+              className={ProfileCss.tabs}
               sx={{
-                borderRight: 1,
-                borderColor: "divider",
                 ".MuiTab-root": {
                   color: "darkred",
+                  border: "none",
                 },
                 ".Mui-selected": {
                   backgroundColor: "darkred",
                   color: "white",
+                  border: "none",
                 },
                 ".MuiTab-root.Mui-selected": {
                   backgroundColor: "darkred",
                   color: "white",
+                  border: "none",
                 },
               }}
             >
               <Tab
-                label="Profile"
-                value="profile"
+                label="Update Profile"
+                value="updateprofile"
                 className={ProfileCss.tabValue}
               />
               <Tab
@@ -128,12 +115,23 @@ const ProfilePage = () => {
                 value="orders"
                 className={ProfileCss.tabValue}
               />
+              <Tab
+                label="Profile"
+                value="profile"
+                className={ProfileCss.tabValue}
+              />
+              <Button
+                className={ProfileCss.logoutButton}
+                onClick={logoutHandler}
+              >
+                Logout
+              </Button>
             </Tabs>
           </Box>
         </Grid>
 
-        <Grid item xs={9}>
-          {tabValue === "profile" && (
+        <Grid className={ProfileCss.profileGridRight} item xs={9}>
+          {tabValue === "updateprofile" && (
             <Box>
               <div className={ProfileCss.profileContainer}>
                 <form onSubmit={submitHandler} className={ProfileCss.form}>
@@ -207,21 +205,26 @@ const ProfilePage = () => {
                   </Button>
                   {loadingUpdateProfile && <Loader />}
                 </form>
-                <Button
-                  className={ProfileCss.logoutButton}
-                  onClick={logoutHandler}
-                >
-                  Logout
-                </Button>
+              </div>
+            </Box>
+          )}
+
+          {tabValue === "profile" && (
+            <Box>
+              <div className={ProfileCss.profile}>
+                <div className={ProfileCss.profileImage}>
+                  <img src={userInfo.profilePicture} alt={userInfo.name} />
+                </div>
+                <div className={ProfileCss.profileInfo}>
+                  <h2>{userInfo.name}</h2>
+                  <p>{userInfo.email}</p>
+                </div>
               </div>
             </Box>
           )}
 
           {tabValue === "orders" && (
             <Box>
-              <Typography variant="h4" gutterBottom>
-                My Orders
-              </Typography>
               {isLoading ? (
                 <Loader />
               ) : error ? (
@@ -229,7 +232,7 @@ const ProfilePage = () => {
                   {error?.data?.message || error.error}
                 </Message>
               ) : (
-                <Accordion>
+                <Accordion className={ProfileCss.orders}>
                   {orders.map((order) => (
                     <Accordion.Item
                       key={order._id}
@@ -241,13 +244,11 @@ const ProfilePage = () => {
                       }
                     >
                       <Accordion.Header>
-                        <Row>
-                          <Col lg={4}>ID: {order._id}</Col>
-                          <Col lg={4}>Date: {formatDate(order.createdAt)}</Col>
-                          <Col lg={4}>
-                            Total: GHS {order.totalPrice.toFixed(2)}
-                          </Col>
-                        </Row>
+                        <div className={ProfileCss.orderDetails}>
+                          <span>ID: {order._id}</span>
+                          <span>{formatDate(order.createdAt)}</span>
+                          <span>GHS {order.totalPrice.toFixed(2)}</span>
+                        </div>
                       </Accordion.Header>
                       <Accordion.Body>
                         <p>
@@ -280,7 +281,7 @@ const ProfilePage = () => {
                           )}
                         </p>
                         <LinkContainer to={`/order/${order._id}`}>
-                          <Button className="btn-sm" variant="primary">
+                          <Button className={ProfileCss.detailsBtn}>
                             Details
                           </Button>
                         </LinkContainer>

@@ -8,7 +8,7 @@ import {
 import MechanicCard from "../../components/Mechanic/MechanicCard";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
-import ShopPageCss from "../ShopPage.module.css"; // Reuse or create a similar CSS module
+import ShopPageCss from "../ShopPage.module.css";
 
 const MechanicHomepage = () => {
   const [filters, setFilters] = useState({
@@ -60,15 +60,23 @@ const MechanicHomepage = () => {
     }
   };
 
-  // Optional carousel images and state
   const images = [
-    // Define your images for carousel here
+    {
+      src: "/images/Mechanic/car-fitter.jpg",
+      title: "Expert Car Fitter",
+      subtitle: "Get your car fitted by from your home",
+    },
+    {
+      src: "/images/Mechanic/mechanic-stock.jpg",
+      title: "Reliable Mechanics",
+      subtitle: "Skilled professionals ready to serve you",
+    },
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const intervalTimes = [3000, 5000, 4000, 4000]; // Example durations
+    const intervalTimes = [3000, 5000];
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % images.length);
     }, intervalTimes[currentSlide]);
@@ -89,7 +97,7 @@ const MechanicHomepage = () => {
           <Form className={ShopPageCss.filterSidebar}>
             {/* Specialties filter */}
             <Form.Group controlId="specialties">
-              <Form.Label>Specialties</Form.Label>
+              <Form.Label className={ShopPageCss.label}>Specialties</Form.Label>
               {isLoadingFilters ? (
                 <Loader />
               ) : isErrorFilters ? (
@@ -111,7 +119,7 @@ const MechanicHomepage = () => {
             </Form.Group>
             {/* Regions filter */}
             <Form.Group controlId="regions">
-              <Form.Label>Regions</Form.Label>
+              <Form.Label className={ShopPageCss.label}>Regions</Form.Label>
               {isLoadingFilters ? (
                 <Loader />
               ) : isErrorFilters ? (
@@ -133,7 +141,7 @@ const MechanicHomepage = () => {
             </Form.Group>
             {/* Cities filter */}
             <Form.Group controlId="cities">
-              <Form.Label>Cities</Form.Label>
+              <Form.Label className={ShopPageCss.label}>Cities</Form.Label>
               {isLoadingFilters ? (
                 <Loader />
               ) : isErrorFilters ? (
@@ -155,7 +163,7 @@ const MechanicHomepage = () => {
             </Form.Group>
             {/* Towns filter */}
             <Form.Group controlId="towns">
-              <Form.Label>Towns</Form.Label>
+              <Form.Label className={ShopPageCss.label}>Towns</Form.Label>
               {isLoadingFilters ? (
                 <Loader />
               ) : isErrorFilters ? (
@@ -177,7 +185,7 @@ const MechanicHomepage = () => {
             </Form.Group>
             {/* Working Hours filter */}
             <Form.Group controlId="workingHours">
-              <Form.Label>Working Hours</Form.Label>
+              <Form.Label className={ShopPageCss.label}>Working Hours</Form.Label>
               {isLoadingFilters ? (
                 <Loader />
               ) : isErrorFilters ? (
@@ -198,7 +206,7 @@ const MechanicHomepage = () => {
               )}
             </Form.Group>
             <Form.Group controlId="sortBy">
-              <Form.Label>Sort By</Form.Label>
+              <Form.Label className={ShopPageCss.label}>Sort By</Form.Label>
               {/* Radio buttons for sorting */}
               <div>
                 <Form.Check
