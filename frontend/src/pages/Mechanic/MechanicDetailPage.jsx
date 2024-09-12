@@ -10,7 +10,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { FaCheck, FaTimes, FaStar, FaCheckCircle } from "react-icons/fa";
+import { FaCheck, FaTimes, FaStar } from "react-icons/fa";
 import {
   useGetMechanicByIdQuery,
   useCreateMechanicReviewMutation,

@@ -39,10 +39,35 @@ export const mechanicApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-        // Fetch filtered mechanics
+        // Fetch filter options
         getFilteredOptions: builder.query({
             query: () => ({
                 url: `${MECHANIC_URL}/filters`,
+                method: 'GET',
+            }),
+        }),
+
+        // Update order status
+        updateOrderStatus: builder.mutation({
+            query: (data) => ({
+                url: `${MECHANIC_URL}/orders/status`,
+                method: 'PUT',
+                body: data,
+            }),
+        }),
+
+        // Clear live location
+        clearLiveLocation: builder.mutation({
+            query: () => ({
+                url: `${MECHANIC_URL}/orders/clear-location`,
+                method: 'PUT',
+            }),
+        }),
+
+        // Get orders for the logged-in mechanic
+        getOrdersForMechanic: builder.query({
+            query: () => ({
+                url: `${MECHANIC_URL}/orders`,
                 method: 'GET',
             }),
         }),
@@ -54,5 +79,8 @@ export const {
     useGetMechanicByIdQuery,
     useCreateMechanicReviewMutation,
     useGetFilteredMechanicsQuery,
-    useGetFilteredOptionsQuery
+    useGetFilteredOptionsQuery,
+    useUpdateOrderStatusMutation,
+    useClearLiveLocationMutation,
+    useGetOrdersForMechanicQuery,
 } = mechanicApiSlice;

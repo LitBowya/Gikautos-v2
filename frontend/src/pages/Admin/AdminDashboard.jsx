@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Grid, Typography, Card, CardContent } from "@mui/material";
 import { useGetUsersQuery } from "../../slices/usersApiSlice";
 import { useGetProductsQuery } from "../../slices/productsApiSlice";

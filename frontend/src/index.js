@@ -4,10 +4,10 @@ import "util";
 import "os-browserify";
 import "path-browserify";
 import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
+    createBrowserRouter,
+    createRoutesFromElements,
+    Route,
+    RouterProvider,
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
@@ -43,58 +43,65 @@ import MechanicHomepage from "./pages/Mechanic/MechanicHomepage.jsx";
 import MechanicDetailPage from "./pages/Mechanic/MechanicDetailPage.jsx";
 import AdminLayout from "./pages/Admin/AdminLayout.jsx";
 import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
+import { SocketProvider } from "./config/socket.js";
+import UserMap from './components/Map/User/UserMap.jsx'
 
 const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route index={true} path="/" element={<HomePage />} />
-      <Route path="/search/:keyword" element={<HomePage />} />
-      <Route path="/page/:pageNumber" element={<HomePage />} />
-      <Route path="/category/:category" element={<ProductByCategoryPage />} />
-      <Route path="/search" element={<SearchBox />} />
-      <Route path="/search/:keyword/page/:pageNumber" element={<HomePage />} />
-      <Route path="/product/:id" element={<ProductPage />} />
-      <Route path="/cart" element={<CartPage />} />
-      <Route path="/wishlist" element={<WishlistPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/shop" element={<ShopPage />} />
-      <Route path="/mechanic" element={<MechanicHomepage />} />
-      <Route path="/mechanic/:id" element={<MechanicDetailPage />} />
+    createRoutesFromElements(
+        <Route path="/" element={<App />}>
+            <Route index={true} path="/" element={<HomePage />} />
+            <Route path="/search/:keyword" element={<HomePage />} />
+            <Route path="/page/:pageNumber" element={<HomePage />} />
+            <Route path="/category/:category" element={<ProductByCategoryPage />} />
+            <Route path="/search" element={<SearchBox />} />
+            <Route path="/search/:keyword/page/:pageNumber" element={<HomePage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/mechanic" element={<MechanicHomepage />} />
+            <Route path="/mechanic/:id" element={<MechanicDetailPage />} />
 
-      <Route path="" element={<PrivateRoute />}>
-        <Route path="/shipping" element={<ShippingPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/placeorder" element={<PlaceOrderPage />} />
-        <Route path="/chatpage" element={<ChatPage />} />
-        <Route path="/order/:id" element={<OrderPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-      </Route>
+            <Route path="" element={<PrivateRoute />}>
+                <Route path="/shipping" element={<ShippingPage />} />
+                <Route path="/payment" element={<PaymentPage />} />
+                <Route path="/placeorder" element={<PlaceOrderPage />} />
+                <Route path="/chatpage" element={<ChatPage />} />
+                <Route path="/order/:id" element={<OrderPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/usermap" element={<UserMap />} />
+            </Route>
 
-      <Route path="" element={<AdminRoute />}>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="orderlist" element={<OrderListPage />} />
-          <Route path="productlist" element={<ProductListPage />} />
-          <Route path="product/:id/edit" element={<ProductEditPage />} />
-          <Route path="userlist" element={<UserListPage />} />
-          <Route path="user/:id/edit" element={<UserEditPage />} />
-          <Route path="productlist/:pageNumber" element={<ProductListPage />} />
+            <Route path="" element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                    <Route path="dashboard" element={<AdminDashboard />} />
+                    <Route path="orderlist" element={<OrderListPage />} />
+                    <Route path="productlist" element={<ProductListPage />} />
+                    <Route path="product/:id/edit" element={<ProductEditPage />} />
+                    <Route path="userlist" element={<UserListPage />} />
+                    <Route path="user/:id/edit" element={<UserEditPage />} />
+                    <Route path="productlist/:pageNumber" element={<ProductListPage />} />
+                </Route>
+            </Route>
         </Route>
-      </Route>
-    </Route>
-  )
+    )
 );
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <AppErrorBoundary>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </AppErrorBoundary>
-  </React.StrictMode>
+    <React.StrictMode>
+        <AppErrorBoundary>
+            <Provider store={store}>
+
+                <SocketProvider>
+                    <RouterProvider router={router} />
+                </SocketProvider>
+
+            </Provider>
+        </AppErrorBoundary>
+    </React.StrictMode>
 );
 
 reportWebVitals();

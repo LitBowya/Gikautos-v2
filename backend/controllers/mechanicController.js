@@ -1,5 +1,8 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
+import OrderMechanic from "../models/orderMechanicModel.js";
+import getRouteGeometry from "../utils/getRouteGeometry.js";
+import { io } from '../config/socket.js'
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
@@ -55,7 +58,6 @@ const createMechanicReview = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error("User not authenticated");
     }
-
 
 
     if (mechanic) {
@@ -181,4 +183,117 @@ const getFilterOptions = asyncHandler(async (req, res) => {
     }
 });
 
-export { getMechanics, getMechanicById, createMechanicReview, getFilteredMechanics, getFilterOptions };
+const updateOrderStatus = asyncHandler(async (req, res) => {
+    const { orderId, status, mode = 'drive' } = req.body; // Default mode to 'drive'
+
+    if (!orderId || !status) {
+        res.status(400);
+        throw new Error("Order ID and status are required");
+    }
+
+    const order = await OrderMechanic.findById(orderId);
+
+    if (order) {
+        if (status === 'accepted' || status === 'declined') {
+            order.status = status;
+
+            if (status === 'accepted') {
+                const geoapifyApiKey = process.env.GEOAPIFY_API_KEY;
+                const { coordinates: carOwnerCoords } = order.carOwnerLocation;
+                const { coordinates: mechanicCoords } = order.mechanicLocation;
+
+                try {
+                    const routeGeometry = await getRouteGeometry(mechanicCoords, carOwnerCoords, geoapifyApiKey, mode);
+
+                    // Ensure the route coordinates are in the correct format
+                    if (routeGeometry && Array.isArray(routeGeometry.coordinates)) {
+                        const formattedCoordinates = routeGeometry.coordinates.map(line =>
+                            line.map(segment =>
+                                segment.map(point =>
+                                    Array.isArray(point) && point.length === 2
+                                        ? [parseFloat(point[0]), parseFloat(point[1])]
+                                        : point
+                                )
+                            )
+                        );
+
+                        order.route = {
+                            type: routeGeometry.type,
+                            coordinates: formattedCoordinates
+                        };
+
+                        await order.save();
+
+                        res.status(200).json({
+                            message: "Order status updated and route information included",
+                            order
+                        });
+
+                        // Emit the order update and log it
+                        const orderUpdateData = { orderId: order._id, route: order.route };
+                        io.emit('orderUpdate', orderUpdateData);
+                        console.log('Order update emitted:', orderUpdateData);
+
+                    } else {
+                        throw new Error('Invalid route geometry format');
+                    }
+                } catch (error) {
+                    console.error('Error fetching route:', error);
+                    res.status(500).json({ message: "Error fetching route" });
+                }
+            } else {
+                await order.save();
+                res.status(200).json({
+                    message: "Order status updated",
+                    order
+                });
+            }
+        } else {
+            res.status(400).json({ message: "Invalid status" });
+        }
+    } else {
+        res.status(404).json({ message: "Order not found" });
+    }
+});
+
+const getOrdersForMechanic = asyncHandler(async (req, res) => {
+    const mechanicId = req.user._id;
+
+    // Debugging: Log mechanicId and request params
+    console.log('Mechanic ID:', mechanicId);
+
+    try {
+        const orders = await OrderMechanic.find({ mechanic: mechanicId }).populate('carOwner', 'name profilePicture');
+
+        console.log('Orders', orders)
+
+        if (orders.length > 0) {
+            res.status(200).json({ status: 'success', message: 'Orders fetched successfully', orders });
+        } else {
+            res.status(404).json({ message: 'No orders found for this mechanic' });
+        }
+    } catch (error) {
+        console.error('Error fetching orders:', error.message);
+        res.status(500).json({ message: 'Error fetching orders' });
+    }
+});
+
+
+const clearLiveLocation = asyncHandler(async (req, res) => {
+    const mechanicId = req.user._id;
+
+    const mechanic = await User.findById(mechanicId);
+
+    if (mechanic) {
+        mechanic.liveLocation = null;
+        await mechanic.save();
+        res.status(200).json({ message: "Live location cleared successfully" });
+    } else {
+        res.status(404);
+        throw new Error("Mechanic not found");
+    }
+});
+
+
+
+export { getMechanics, getMechanicById, createMechanicReview, getFilteredMechanics, getFilterOptions, updateOrderStatus, getOrdersForMechanic, clearLiveLocation };

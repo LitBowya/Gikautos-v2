@@ -25,6 +25,7 @@ const mechanicDetailsSchema = new mongoose.Schema({
         sunday: { type: Boolean, default: false },
     },
     additionalInfo: { type: String },
+    verified: { type: Boolean, default: false },
 });
 
 const reviewSchema = mongoose.Schema(
@@ -131,12 +132,30 @@ const userSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
         },
-        verified: { type: Boolean, default: false },
+        // New fields
+        liveLocation: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                required: true,
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
+        },
+        isOnline: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
     }
 );
+
+// Create an index for geospatial queries
+userSchema.index({ liveLocation: '2dsphere' });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);

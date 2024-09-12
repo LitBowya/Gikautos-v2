@@ -20,20 +20,26 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import connectDB from "./config/db.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
+// Import Socket.IO configuration
+import { initSocket } from "./config/socket.js";
+
 dotenv.config();
 const port = process.env.PORT || 5000;
 
 // Connect to MongoDB
 (async () => {
-  try {
-    await connectDB();
-  } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
-  }
+    try {
+        await connectDB();
+    } catch (error) {
+        console.error(`Error connecting to MongoDB: ${error.message}`);
+    }
 })();
 
 const app = express();
 const server = http.createServer(app);
+
+// Initialize Socket.IO with the server
+initSocket(server);
 
 app.use(cors());
 
@@ -47,7 +53,7 @@ app.use(cookieParser());
 
 // Basic route for checking if API is running
 app.get("/", (req, res) => {
-  res.send("API is running");
+    res.send("API is running");
 });
 
 // Setup routes
@@ -70,5 +76,5 @@ app.use(errorHandler);
 
 // Start the server
 server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+    console.log(`Server running on port ${port}`);
 });
