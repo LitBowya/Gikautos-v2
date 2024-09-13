@@ -95,7 +95,7 @@ const Header = () => {
                     <FaRocketchat />
                   </Link>
                   <Link
-                    to="/mechanic"
+                    to="/usermap"
                     className={HeaderCss.icon2}
                     data-tooltip="Mechanic"
                   >

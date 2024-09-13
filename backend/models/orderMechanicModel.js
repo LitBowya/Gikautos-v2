@@ -15,6 +15,24 @@ const orderMechanicSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    car: {
+        name: {
+            type: String,
+            required: true,
+        },
+        brand: {
+            type: String,
+            required: true,
+        },
+        color: {
+            type: String,
+            required: true,
+        },
+        plateNumber: {
+            type: String,
+            required: true,
+        }
+    },
     status: {
         type: String,
         enum: ['pending', 'accepted', 'declined'],
@@ -44,17 +62,15 @@ const orderMechanicSchema = new mongoose.Schema({
     },
     route: {
         type: {
-            type: String, // 'MultiLineString'
-            enum: ['LineString', 'MultiLineString'], // Only allow these types
-            required: true
+            type: String,
+            default: 'MultiLineString', // Only allow 'MultiLineString'
+            required: true,
         },
         coordinates: {
             type: [[[Number]]], // Array of arrays of arrays of numbers (longitude, latitude pairs)
-            required: true
+            required: true,
         },
-        default: {}
     },
-
 }, {
     timestamps: true,
 });

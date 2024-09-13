@@ -43,3 +43,22 @@ main {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Add this CSS to make icons round */
+.round-icon {
+  border-radius: 50%; /* Makes the icon round */
+  overflow: hidden; /* Ensures image does not overflow */
+}
+
+.round-icon img {
+  border-radius: 50%; /* Makes the image round */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

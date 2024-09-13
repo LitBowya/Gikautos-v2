@@ -4,8 +4,11 @@ import {
   Col,
   ListGroup,
   Container,
-    ProgressBar,
+  ProgressBar,
   Card,
+  Modal,
+  Button,
+  Form,
 } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -15,6 +18,7 @@ import {
   useGetMechanicByIdQuery,
   useCreateMechanicReviewMutation,
 } from "../../slices/mechanicApiSlice";
+import { usePlaceOrderMutation } from "../../slices/usersApiSlice";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
 import Rating from "../../components/Rating/Rating";
@@ -29,6 +33,12 @@ const MechanicDetailPage = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [details, setDetails] = useState("");
+  const [carName, setCarName] = useState("");
+  const [carBrand, setCarBrand] = useState("");
+  const [carColor, setCarColor] = useState("");
+  const [carPlateNumber, setCarPlateNumber] = useState("");
 
   const {
     data: mechanic,
@@ -39,6 +49,7 @@ const MechanicDetailPage = () => {
 
   const [createMechanicReview, { isLoading: loadingProductReview }] =
     useCreateMechanicReviewMutation();
+  const [placeOrder, { isLoading: loadingOrder }] = usePlaceOrderMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -53,6 +64,24 @@ const MechanicDetailPage = () => {
       console.error("Error creating review", err);
       refetch();
       setComment("");
+    }
+  };
+
+  const handleOrderSubmit = async () => {
+    try {
+      await placeOrder({
+        mechanicId: mechanic.mechanic._id,
+        details,
+        carName,
+        carBrand,
+        carColor,
+        carPlateNumber,
+      }).unwrap();
+      toast.success("Order placed successfully");
+      setShowModal(false); // Close modal after successful order
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to place order");
+      console.error(err);
     }
   };
 
@@ -95,7 +124,7 @@ const MechanicDetailPage = () => {
   return (
     <div className={ProductCss.productPage}>
       <Container>
-        <Link className="btn btn-light my-3" to="/mechanic">
+        <Link className="btn btn-light my-3" to="/usermap">
           Go Back
         </Link>
         <Card className="my-3">
@@ -118,6 +147,17 @@ const MechanicDetailPage = () => {
                   />
                 </Card.Text>
                 <ListGroup variant="flush" className="my-3">
+                  {mechanic.mechanic.isOnline ? (
+                    <ListGroup.Item>
+                      <strong>Online:</strong>{" "}
+                      <FaCheck style={{ color: "green" }} />
+                    </ListGroup.Item>
+                  ) : (
+                    <ListGroup.Item>
+                      <strong>Online:</strong>{" "}
+                      <FaTimes style={{ color: "red" }} />
+                    </ListGroup.Item>
+                  )}
                   <ListGroup.Item>
                     <strong>Specialty:</strong>{" "}
                     {mechanic.mechanic.mechanicDetails.specialty}
@@ -350,9 +390,109 @@ const MechanicDetailPage = () => {
             </Col>
           </Row>
         </Card>
+
+        {/* Sticky Order Button */}
+        <div style={styles.stickyButtonContainer}>
+          <Button
+            variant="primary"
+            style={styles.stickyButton}
+            onClick={() => setShowModal(true)} // Open modal on click
+          >
+            Order
+          </Button>
+        </div>
+
+        {/* Order Modal */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Place Order</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="details">
+                <Form.Label>What is wrong with the car</Form.Label>
+                <Form.Control
+                  type="text"
+                  className='mb-2'
+                  placeholder="Enter details"
+                  value={details}
+                  onChange={(e) => setDetails(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="carName">
+                <Form.Label>Car Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  className='mb-2'
+                  placeholder="Enter car name"
+                  value={carName}
+                  onChange={(e) => setCarName(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="carBrand">
+                <Form.Label>Car Brand</Form.Label>
+                <Form.Control
+                  type="text"
+                  className='mb-2'
+                  placeholder="Enter car brand"
+                  value={carBrand}
+                  onChange={(e) => setCarBrand(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="carColor">
+                <Form.Label>Car Color</Form.Label>
+                <Form.Control
+                  type="text"
+                  className='mb-2'
+                  placeholder="Enter car color"
+                  value={carColor}
+                  onChange={(e) => setCarColor(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="carPlateNumber">
+                <Form.Label>Car Plate Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  className='mb-2'
+                  placeholder="Enter car plate number"
+                  value={carPlateNumber}
+                  onChange={(e) => setCarPlateNumber(e.target.value)}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleOrderSubmit}
+              disabled={loadingOrder} // Disable button when placing an order
+            >
+              {loadingOrder ? "Ordering..." : "Order"}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </div>
   );
 };
 
 export default MechanicDetailPage;
+
+const styles = {
+  stickyButtonContainer: {
+    position: "sticky",
+    left: "10px",
+    bottom: "10px", // Center vertically
+    zIndex: 10, // Ensure it's on top of other elements
+  },
+  stickyButton: {
+    padding: "10px 20px",
+  },
+};

@@ -232,7 +232,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
                         // Emit the order update and log it
                         const orderUpdateData = { orderId: order._id, route: order.route };
                         io.emit('orderUpdate', orderUpdateData);
-                        console.log('Order update emitted:', orderUpdateData);
+                        
 
                     } else {
                         throw new Error('Invalid route geometry format');
